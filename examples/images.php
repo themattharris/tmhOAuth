@@ -11,7 +11,7 @@ if ( ! empty($_FILES)) {
   ));
 
   $tmhOAuth->request('POST', $tmhOAuth->url("account/{$_POST['method']}"), array(
-      'image' => "@{$_FILES['image']['tmp_name']};type={$_FILES['image']['type']}",
+      'image' => "@{$_FILES['image']['tmp_name']};type={$_FILES['image']['type']};filename={$_FILES['image']['name']}",
       'include_entities'  => '1'
     ),
     true, // use auth
