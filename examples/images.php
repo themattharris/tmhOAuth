@@ -42,7 +42,7 @@ if ( ! empty($_FILES)) {
   if ($_POST['method'] == 'update_profile_background_image')
     $params['use'] = 'true';
 
-  $tmhOAuth->request('POST', $tmhOAuth->url("account/{$_POST['method']}"),
+  $tmhOAuth->request('POST', $tmhOAuth->url("1/account/{$_POST['method']}"),
     $params,
     true, // use auth
     true  // multipart

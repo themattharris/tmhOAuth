@@ -34,7 +34,7 @@ $tmhOAuth = new tmhOAuth(array(
 $tmhOAuth->config['force_timestamp'] = true;
 $tmhOAuth->config['timestamp'] = strtotime('yesterday');
 
-$tmhOAuth->auto_fix_time_request('GET', $tmhOAuth->url('account/verify_credentials'));
+$tmhOAuth->auto_fix_time_request('GET', $tmhOAuth->url('1/account/verify_credentials'));
 
 if ($tmhOAuth->response['code'] == 200) {
   if ($tmhOAuth->auto_fixed_time)

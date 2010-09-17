@@ -30,7 +30,7 @@ function generate_verify_header($tmhOAuth) {
   // generate the verify crendentials header -- BUT DON'T SEND
   // note the https URL change - this is due to posterous requiring https in the X-Auth-Service-Provider
   $tmhOAuth->config['prevent_request'] = true;
-  $tmhOAuth->request('GET', $tmhOAuth->url('account/verify_credentials'));
+  $tmhOAuth->request('GET', $tmhOAuth->url('1/account/verify_credentials'));
   $tmhOAuth->config['prevent_request'] = false;
   $tmhOAuth->pr($tmhOAuth);
   die();
@@ -39,7 +39,7 @@ function generate_verify_header($tmhOAuth) {
 function prepare_request($tmhOAuth) {
   // create the headers for the echo
   $headers = array(
-    'X-Auth-Service-Provider: ' . $tmhOAuth->url('account/verify_credentials'),
+    'X-Auth-Service-Provider: ' . $tmhOAuth->url('1/account/verify_credentials'),
     'X-Verify-Credentials-Authorization: ' . $tmhOAuth->auth_header,
   );
 
