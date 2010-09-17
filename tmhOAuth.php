@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.1
+ * @version 0.11
  *
- * 26 August 2010
+ * 17 September 2010
  */
 class tmhOAuth {
   /**
@@ -156,7 +156,7 @@ class tmhOAuth {
    *
    * @param string $method an HTTP method such as GET or POST
    * @return void value is stored to a class variable
-   * @author Matt Harris
+   * @author themattharris
    */
   private function prepare_method($method) {
     $this->method = strtoupper($method);
@@ -168,7 +168,7 @@ class tmhOAuth {
    *
    * @param string $url the request URL
    * @return void value is stored to a class variable
-   * @author Matt Harris
+   * @author themattharris
    */
   private function prepare_url($url) {
     $parts = parse_url($url);
@@ -417,7 +417,13 @@ class tmhOAuth {
         // GET request so convert the parameters to a querystring
         if ( ! empty($this->request_params)) {
           foreach ($this->request_params as $k => $v) {
-            $params[] = $this->safe_encode($k) . '=' . $this->safe_encode($v);
+            // Multipart params haven't been encoded yet.
+            // Not sure why you would do a multipart GET but anyway, here's the support for it
+            if ($this->config['multipart']) {
+              $params[] = $this->safe_encode($k) . '=' . $this->safe_encode($v);
+            } else {
+              $params[] = $k . '=' . $v;
+            }
           }
           $qs = implode('&', $params);
           $this->url = strlen($qs) > 0 ? $this->url . '?' . $qs : $this->url;
