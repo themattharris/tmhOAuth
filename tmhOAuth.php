@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * tmhOAuth
  *
@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.1
+ * @version 0.1.1
  *
- * 26 August 2010
+ * 17 September 2010
  */
 class tmhOAuth {
   /**
@@ -315,15 +315,16 @@ class tmhOAuth {
    * @param array $params the request parameters as an array of key=value pairs
    * @param string $useauth whether to use authentication when making the request. Default true.
    * @param string $multipart whether this request contains multipart data. Default false
+   * @param boolean $return_curl_handle whether the curl handle should be returned instead of executed. Default false
    */
-  function request($method, $url, $params=array(), $useauth=true, $multipart=false) {
+  function request($method, $url, $params=array(), $useauth=true, $multipart=false, $return_curl_handle=false) {
     $this->config['multipart'] = $multipart;
 
     $this->create_nonce();
     $this->create_timestamp();
 
     $this->sign($method, $url, $params, $useauth);
-    $this->curlit($multipart);
+    return $this->curlit($return_curl_handle);
   }
 
   /**
@@ -376,11 +377,11 @@ class tmhOAuth {
    */
   function url($request, $format='json') {
     $format = strlen($format) > 0 ? ".$format" : '';
-    return implode('/', array(
+    return implode('/', array_filter(array(
       $this->config['host'],
       $this->config['v'],
       $request . $format
-    ));
+    )));
   }
 
   /**
@@ -402,12 +403,11 @@ class tmhOAuth {
   }
 
   /**
-   * Makes a curl request. Takes no parameters as all should have been prepared
-   * by the request method
-   *
-   * @return void response data is stored in the class variable 'response'
+   * Makes a curl request. All should have been prepared by the request method
+   * @param $return_curl_handle boolean Defaults to false
+   * @return When $return_curl_handle is TRUE, returns the curl handle; otherwise void: response data is stored in the class variable 'response'
    */
-  private function curlit() {
+  private function curlit($return_curl_handle=false) {
     if (@$this->config['prevent_request'])
       return;
 
@@ -471,6 +471,11 @@ class tmhOAuth {
     if ( ! empty($this->headers)) {
       curl_setopt($c, CURLOPT_HTTPHEADER, $this->headers);
     }
+
+	// return the curl handle?
+	if ($return_curl_handle) {
+		return $c;
+	}
 
     // do it!
     $response = curl_exec($c);
