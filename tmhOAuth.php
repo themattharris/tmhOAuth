@@ -7,7 +7,7 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.13
+ * @version 0.14
  *
  * 17 September 2010
  */
@@ -290,8 +290,8 @@ class tmhOAuth {
     foreach ($this->auth_params as $k => $v) {
       $kv[] = "{$k}=\"{$v}\"";
     }
-    $this->auth_header = 'Authorization: OAuth ' . implode(', ', $kv);
-    $this->headers[] = $this->auth_header;
+    $this->auth_header = 'OAuth ' . implode(', ', $kv);
+    $this->headers[] = 'Authorization: ' . $this->auth_header;
   }
 
   /**

@@ -18,6 +18,9 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.14  Fixed authorisation header for use with OAuth Echo
+      17 September 2010
+
 0.13  Added use_ssl configuration parameter
       Fixed config array typo
       Removed v from the config
