@@ -174,8 +174,8 @@ class tmhOAuth {
     $parts = parse_url($url);
 
     $port = @$parts['port'];
-    $scheme = $parts['scheme'];
-    $host = $parts['host'];
+    $scheme = @$parts['scheme'];
+    $host = @$parts['host'];
     $path = @$parts['path'];
 
     $port or $port = ($scheme == 'https') ? '443' : '80';
@@ -392,7 +392,7 @@ class tmhOAuth {
    * @param string $header the response headers
    * @return the string length of the header
    */
-  private function curlHeader($ch, $header) {
+  function curlHeader($ch, $header) {
     $i = strpos($header, ':');
     if ( ! empty($i) ) {
       $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
