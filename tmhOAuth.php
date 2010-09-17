@@ -7,7 +7,7 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.11
+ * @version 0.12
  *
  * 17 September 2010
  */
@@ -24,18 +24,26 @@ class tmhOAuth {
     // default configuration options
     $this->config = array_merge(
       array(
-        'consumer_key'    => '',
-        'consumer_secret' => '',
-        'user_token'      => '',
-        'user_secret'     => '',
-        'host'            => 'http://api.twitter.com',
-        'v'               => '1',
-        'debug'           => false,
-        'force_nonce'     => false,
-        'nonce'           => false, // used for checking signatures. leave as false for auto
-        'force_timestamp' => false,
-        'timestamp'       => false, // used for checking signatures. leave as false for auto
-        'oauth_version'   => '1.0'
+        'consumer_key'        => '',
+        'consumer_secret'     => '',
+        'user_token'          => '',
+        'user_secret'         => '',
+        'host'                => 'http://api.twitter.com',
+        'v'                   => '1',
+        'debug'               => false,
+        'force_nonce'         => false,
+        'nonce'               => false, // used for checking signatures. leave as false for auto
+        'force_timestamp'     => false,
+        'timestamp'           => false, // used for checking signatures. leave as false for auto
+        'oauth_version'       => '1.0',
+
+        // you probably don't want to change any of these curl values
+        'curl_connecttimeout' => 30,
+        'curl_timeout'        => 10,
+        // for security you may want to set this to TRUE. If you do you need
+        // to install the servers certificate in your local certificate store.
+        'curl_ssl_verifypeer' => FALSE
+        'curl_followlocation' => FALSE // whether to follow redirects or not
       ),
       $config
     );
@@ -435,12 +443,11 @@ class tmhOAuth {
     // configure curl
     $c = curl_init();
     curl_setopt($c, CURLOPT_USERAGENT, "themattharris' HTTP Client");
-    curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 30);
-    curl_setopt($c, CURLOPT_TIMEOUT, 10);
+    curl_setopt($c, CURLOPT_CONNECTTIMEOUT, $this->config['curl_connecttimeout']);
+    curl_setopt($c, CURLOPT_TIMEOUT, $this->config['curl_timeout']);
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
-    // for security you may want to set this to TRUE. If you do you need to install
-    // the servers certificate in your local certificate store.
-    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, $this->config['curl_ssl_verifypeer']);
+    curl_setopt($c, CURLOPT_FOLLOWLOCATION, $this->config['curl_followlocation']);
     curl_setopt($c, CURLOPT_URL, $this->url);
     // process the headers
     curl_setopt($c, CURLOPT_HEADERFUNCTION, array($this, 'curlHeader'));

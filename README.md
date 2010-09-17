@@ -18,6 +18,9 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.12  Moved curl options to config
+      Added the ability for curl to follow redirects, default false
+      17 September 2010
 
 0.11  Fixed a bug in the GET requests
       17 September 2010
