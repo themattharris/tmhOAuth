@@ -18,6 +18,9 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.2   Added support for the Streaming API
+      17 September 2010
+      
 0.14  Fixed authorisation header for use with OAuth Echo
       17 September 2010
 
@@ -44,3 +47,9 @@ License: Apache 2 (see included LICENSE file)
 
 Follow me on Twitter: <http://twitter.com/themattharris>
 Check out the Twitter Developer Resources: <http://dev.twitter.com>
+
+## To Do
+
+- Add good behavior logic to the Streaming API handler - i.e. on disconnect back off
+- Add demo of responsible rate limit handling
+- Async Curl support

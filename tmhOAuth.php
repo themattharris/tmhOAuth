@@ -7,7 +7,7 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.14
+ * @version 0.2
  *
  * 17 September 2010
  */
@@ -33,26 +33,31 @@ class tmhOAuth {
     // default configuration options
     $this->config = array_merge(
       array(
-        'consumer_key'        => '',
-        'consumer_secret'     => '',
-        'user_token'          => '',
-        'user_secret'         => '',
-        'use_ssl'             => true,
-        'host'                => 'api.twitter.com',
-        'debug'               => false,
-        'force_nonce'         => false,
-        'nonce'               => false, // used for checking signatures. leave as false for auto
-        'force_timestamp'     => false,
-        'timestamp'           => false, // used for checking signatures. leave as false for auto
-        'oauth_version'       => '1.0',
+        'consumer_key'               => '',
+        'consumer_secret'            => '',
+        'user_token'                 => '',
+        'user_secret'                => '',
+        'use_ssl'                    => true,
+        'host'                       => 'api.twitter.com',
+        'debug'                      => false,
+        'force_nonce'                => false,
+        'nonce'                      => false, // used for checking signatures. leave as false for auto
+        'force_timestamp'            => false,
+        'timestamp'                  => false, // used for checking signatures. leave as false for auto
+        'oauth_version'              => '1.0',
 
         // you probably don't want to change any of these curl values
-        'curl_connecttimeout' => 30,
-        'curl_timeout'        => 10,
+        'curl_connecttimeout'        => 30,
+        'curl_timeout'               => 10,
         // for security you may want to set this to TRUE. If you do you need
         // to install the servers certificate in your local certificate store.
-        'curl_ssl_verifypeer' => FALSE,
-        'curl_followlocation' => FALSE // whether to follow redirects or not
+        'curl_ssl_verifypeer'        => false,
+        'curl_followlocation'        => false, // whether to follow redirects or not
+
+        // streaming API
+        'is_streaming'               => false,
+        'streaming_eol'              => "\r\n",
+        'streaming_metrics_interval' => 60,
       ),
       $config
     );
@@ -385,6 +390,52 @@ class tmhOAuth {
   }
 
   /**
+   * Make a long poll HTTP request using this library. This method is
+   * different to the other request methods as it isn't supposed to disconnect
+   *
+   * Using this method expects a callback which will receive the streaming
+   * responses.
+   *
+   * @param string $method the HTTP method being used. e.g. POST, GET, HEAD etc
+   * @param string $url the request URL without query string parameters
+   * @param array $params the request parameters as an array of key=value pairs
+   * @param string $callback the callback function to stream the buffer to.
+   */
+  function streaming_request($method, $url, $params=array(), $callback='') {
+    if ( ! empty($callback) ) {
+      if ( ! function_exists($callback) ) {
+        return false;
+      }
+      $this->config['streaming_callback'] = $callback;
+    }
+    $this->metrics['start']          = time();
+    $this->metrics['interval_start'] = $this->metrics['start'];
+    $this->metrics['tweets']         = 0;
+    $this->metrics['last_tweets']    = 0;
+    $this->metrics['bytes']          = 0;
+    $this->metrics['last_bytes']     = 0;
+    $this->config['is_streaming']    = true;
+    $this->request($method, $url, $params);
+  }
+
+  /**
+   * Handles the updating of the current Streaming API metrics.
+   */
+  function update_metrics() {
+    $now = time();
+    if (($this->metrics['interval_start'] + $this->config['streaming_metrics_interval']) > $now)
+      return false;
+
+    $this->metrics['tps'] = round( ($this->metrics['tweets'] - $this->metrics['last_tweets']) / $this->config['streaming_metrics_interval'], 2);
+    $this->metrics['bps'] = round( ($this->metrics['bytes'] - $this->metrics['last_bytes']) / $this->config['streaming_metrics_interval'], 2);
+
+    $this->metrics['last_bytes'] = $this->metrics['bytes'];
+    $this->metrics['last_tweets'] = $this->metrics['tweets'];
+    $this->metrics['interval_start'] = $now;
+    return $this->metrics;
+  }
+
+  /**
    * Utility function to create the request URL in the requested format
    *
    * @param string $request the API method without extension
@@ -422,6 +473,46 @@ class tmhOAuth {
       $this->response['headers'][$key] = $value;
     }
     return strlen($header);
+  }
+
+  /**
+    * Utility function to parse the returned curl buffer and store them until
+    * an EOL is found. The buffer for curl is an undefined size so we need
+    * to collect the content until an EOL is found.
+    *
+    * This function calls the previously defined streaming callback method.
+    *
+    * @param object $ch curl handle
+    * @param string $data the current curl buffer
+    */
+  private function curlWrite($ch, $data) {
+    $l = strlen($data);
+    if (strpos($data, $this->config['streaming_eol']) === false) {
+      $this->buffer .= $data;
+      return $l;
+    }
+
+    $buffered = explode($this->config['streaming_eol'], $data);
+    $content = $this->buffer . $buffered[0];
+
+    $this->metrics['tweets']++;
+    $this->metrics['bytes'] += strlen($content);
+
+    if ( ! function_exists($this->config['streaming_callback']))
+      return 0;
+
+    $metrics = $this->update_metrics();
+    $stop = call_user_func(
+      $this->config['streaming_callback'],
+      $content,
+      strlen($content),
+      $metrics
+    );
+    $this->buffer = $buffered[1];
+    if ($stop)
+      return 0;
+
+    return $l;
   }
 
   /**
@@ -468,6 +559,14 @@ class tmhOAuth {
     curl_setopt($c, CURLOPT_HEADERFUNCTION, array($this, 'curlHeader'));
     curl_setopt($c, CURLOPT_HEADER, FALSE);
     curl_setopt($c, CURLINFO_HEADER_OUT, true);
+
+    if ($this->config['is_streaming']) {
+      // process the body
+      $this->response['content-length'] = 0;
+      curl_setopt($c, CURLOPT_TIMEOUT, 0);
+      curl_setopt($c, CURLOPT_WRITEFUNCTION, array($this, 'curlWrite'));
+    }
+
     switch ($this->method) {
       case 'GET':
         break;
