@@ -1,11 +1,27 @@
 <?php
 
+/**
+ * Obtain a users token and secret using xAuth.
+ * Twitter must have granted you xAuth access to use this.
+ *
+ * Instructions:
+ * 1) If you don't have one already, create a Twitter application on
+ *      http://dev.twitter.com/apps
+ * 2) From the application details page copy the consumer key and consumer
+ *      secret into the place in this code marked with (YOUR_CONSUMER_KEY
+ *      and YOUR_CONSUMER_SECRET)
+ * 3) Fill in the username and password of the user you wish to obtain
+ *      the user token and secret for.
+ * 4) In a terminal or server type:
+ *      php /path/to/here/xauth.php
+ *
+ * @author themattharris
+ */
+
 require '../tmhOAuth.php';
 $tmhOAuth = new tmhOAuth(array(
-  'consumer_key'    => '',
-  'consumer_secret' => '',
-  'user_token'      => '',
-  'user_secret'     => '',
+  'consumer_key'    => 'YOUR_CONSUMER_KEY',
+  'consumer_secret' => 'YOUR_CONSUMER_SECRET',
 ));
 
 $tmhOAuth->request('POST', "https://api.twitter.com/oauth/access_token", array(

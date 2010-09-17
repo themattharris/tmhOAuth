@@ -18,6 +18,13 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.13  Added use_ssl configuration parameter
+      Fixed config array typo
+      Removed v from the config
+      Remove protocol from the host (configured by use_ssl)
+      Added include for easier debugging
+      17 September 2010
+
 0.12  Moved curl options to config
       Added the ability for curl to follow redirects, default false
       17 September 2010

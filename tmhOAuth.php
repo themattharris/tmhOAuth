@@ -7,7 +7,7 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.12
+ * @version 0.13
  *
  * 17 September 2010
  */
@@ -21,6 +21,15 @@ class tmhOAuth {
     $this->params = array();
     $this->auto_fixed_time = false;
 
+    // for ease of testing
+    include '_account.php';
+    if (isset($_accounts) && $config['consumer_key'] == 'YOUR_CONSUMER_KEY') :
+      if ($config['user_token'] == 'A_USER_TOKEN')
+        $config = array_merge($config, $_accounts['test_with_user']);
+      else
+        $config = array_merge($config, $_accounts['test']);
+    endif;
+
     // default configuration options
     $this->config = array_merge(
       array(
@@ -28,8 +37,8 @@ class tmhOAuth {
         'consumer_secret'     => '',
         'user_token'          => '',
         'user_secret'         => '',
-        'host'                => 'http://api.twitter.com',
-        'v'                   => '1',
+        'use_ssl'             => true,
+        'host'                => 'api.twitter.com',
         'debug'               => false,
         'force_nonce'         => false,
         'nonce'               => false, // used for checking signatures. leave as false for auto
@@ -42,7 +51,7 @@ class tmhOAuth {
         'curl_timeout'        => 10,
         // for security you may want to set this to TRUE. If you do you need
         // to install the servers certificate in your local certificate store.
-        'curl_ssl_verifypeer' => FALSE
+        'curl_ssl_verifypeer' => FALSE,
         'curl_followlocation' => FALSE // whether to follow redirects or not
       ),
       $config
@@ -384,9 +393,15 @@ class tmhOAuth {
    */
   function url($request, $format='json') {
     $format = strlen($format) > 0 ? ".$format" : '';
+    $proto  = $this->config['use_ssl'] ? 'https:/' : 'http:/';
+
+    // backwards compatibility with v0.1
+    if (isset($this->config['v']))
+      $this->config['host'] = $this->config['host'] . '/' . $this->config['v'];
+
     return implode('/', array(
+      $proto,
       $this->config['host'],
-      $this->config['v'],
       $request . $format
     ));
   }
