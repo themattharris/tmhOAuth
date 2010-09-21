@@ -33,16 +33,18 @@ $tmhOAuth = new tmhOAuth(array(
 
 $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/user_timeline'), array(
   'include_entities' => '1',
-  'include_rts' => '1'
+  'include_rts' => '1',
+  'screen_name' => 'luyi61',
+  'count' => 1
 ));
 
 if ($tmhOAuth->response['code'] == 200) {
   $timeline = json_decode($tmhOAuth->response['response'], true);
-  foreach ($timeline as $tweet) : 
+  foreach ($timeline as $tweet) :
     $keys = array();
     $replacements = array();
     $is_retweet = false;
-    
+
     if (isset($tweet['retweeted_status'])) {
       $tweet = $tweet['retweeted_status'];
       $is_retweet = true;
@@ -52,7 +54,7 @@ if ($tmhOAuth->response['code'] == 200) {
     foreach ($tweet['entities'] as $type => $things) {
       foreach ($things as $entity => $value) {
         $tweet_link = "<a href=\"http://twitter.com/{$value['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
-        
+
         switch ($type) {
           case 'hashtags':
             $href = "<a href=\"http://search.twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
@@ -76,13 +78,20 @@ if ($tmhOAuth->response['code'] == 200) {
         $replacements[$value['indices']['0']] = $href;
       }
     }
+
+    ksort($replacements);
+    $replacements = array_reverse($replacements, true);
+    $entified_tweet = $tweet['text'];
+    foreach ($replacements as $k => $v) {
+      $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
+    }
   ?>
   <div id="<?php echo $tweet['id']; ?>" style="margin-bottom: 1em">
     <span>Orig: <?php echo $tweet['text']; ?></span><br>
-    <span>Entitied: <?php echo str_replace($keys, $replacements, $tweet['text']); ?></span>
+    <span>Entitied: <?php echo $entified_tweet ?></span>
     <small><?php echo $tweet_link ?><?php if ($is_retweet) : ?>is retweet<?php endif; ?></small>
   </div>
-<?php 
+<?php
   endforeach;
 } else {
   $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
