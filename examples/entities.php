@@ -33,9 +33,9 @@ $tmhOAuth = new tmhOAuth(array(
 
 $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/user_timeline'), array(
   'include_entities' => '1',
-  'include_rts' => '1',
-  'screen_name' => 'luyi61',
-  'count' => 1
+  'include_rts'      => '1',
+  'screen_name'      => 'themattharris',
+  'count'            => '1'
 ));
 
 if ($tmhOAuth->response['code'] == 200) {
