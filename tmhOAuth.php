@@ -22,13 +22,15 @@ class tmhOAuth {
     $this->auto_fixed_time = false;
 
     // for ease of testing
-    include '_account.php';
-    if (isset($_accounts) && $config['consumer_key'] == 'YOUR_CONSUMER_KEY') :
-      if ($config['user_token'] == 'A_USER_TOKEN')
-        $config = array_merge($config, $_accounts['test_with_user']);
-      else
-        $config = array_merge($config, $_accounts['test']);
-    endif;
+    if (file_exists('_account.php')) {
+      include '_account.php';
+      if (isset($_accounts) && $config['consumer_key'] == 'YOUR_CONSUMER_KEY') :
+        if ($config['user_token'] == 'A_USER_TOKEN')
+          $config = array_merge($config, $_accounts['test_with_user']);
+        else
+          $config = array_merge($config, $_accounts['test']);
+      endif;
+    }
 
     // default configuration options
     $this->config = array_merge(

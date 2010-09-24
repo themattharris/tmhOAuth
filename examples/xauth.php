@@ -24,7 +24,7 @@ $tmhOAuth = new tmhOAuth(array(
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
 ));
 
-$tmhOAuth->request('POST', "https://api.twitter.com/oauth/access_token", array(
+$tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
   'x_auth_username' => '',
   'x_auth_password' => '',
   'x_auth_mode'     => 'client_auth'
