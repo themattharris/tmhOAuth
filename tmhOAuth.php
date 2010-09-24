@@ -22,7 +22,7 @@ class tmhOAuth {
     $this->auto_fixed_time = false;
 
     // for ease of testing
-    if (file_exists('_account.php')) {
+    if (file_exists(dirname(__FILE__).'/_account.php')) {
       include '_account.php';
       if (isset($_accounts) && $config['consumer_key'] == 'YOUR_CONSUMER_KEY') :
         if ($config['user_token'] == 'A_USER_TOKEN')
