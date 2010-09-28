@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.2
+ * @version 0.3
  *
- * 17 September 2010
+ * 28 September 2010
  */
 class tmhOAuth {
   /**
@@ -661,6 +661,64 @@ class tmhOAuth {
       return "{$url}?{$qs}";
     else
       return $url;
+  }
+
+  /**
+   * Entifies the tweet using the given entities element
+   *
+   * @param array $tweet the json converted to normalised array
+   * @return the tweet text with entities replaced with hyperlinks
+   */
+  function entify($tweet) {
+    $keys = array();
+    $replacements = array();
+    $is_retweet = false;
+
+    if (isset($tweet['retweeted_status'])) {
+      $tweet = $tweet['retweeted_status'];
+      $is_retweet = true;
+    }
+
+    if (!isset($tweet['entities'])) {
+      return $tweet['text'];
+    }
+
+    // prepare the entities
+    foreach ($tweet['entities'] as $type => $things) {
+      foreach ($things as $entity => $value) {
+        $tweet_link = "<a href=\"http://twitter.com/{$value['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+
+        switch ($type) {
+          case 'hashtags':
+            $href = "<a href=\"http://search.twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
+            break;
+          case 'user_mentions':
+            $href = "@<a href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
+            break;
+          case 'urls':
+            $url = empty($value['expanded_url']) ? $value['url'] : $value['expanded_url'];
+            $display = isset($value['display_url']) ? $value['display_url'] : str_replace('http://', '', $url);
+            // Not all pages are served in UTF-8 so you may need to do this ...
+            $display = urldecode(str_replace('%E2%80%A6', '&hellip;', urlencode($display)));
+            $href = "<a href=\"{$value['url']}\">{$display}</a>";
+            break;
+        }
+        $keys[$value['indices']['0']] = substr(
+          $tweet['text'],
+          $value['indices']['0'],
+          $value['indices']['1'] - $value['indices']['0']
+        );
+        $replacements[$value['indices']['0']] = $href;
+      }
+    }
+
+    ksort($replacements);
+    $replacements = array_reverse($replacements, true);
+    $entified_tweet = $tweet['text'];
+    foreach ($replacements as $k => $v) {
+      $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
+    }
+    return $entified_tweet;
   }
 }
 

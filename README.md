@@ -26,6 +26,9 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.3   Moved entities rendering into the library
+      28 September 2010
+
 0.2   Added support for the Streaming API
       17 September 2010
 
