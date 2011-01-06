@@ -86,7 +86,7 @@ if ($tmhOAuth->response['code'] == 200) {
       $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
     }
   ?>
-  <div id="<?php echo $tweet['id']; ?>" style="margin-bottom: 1em">
+  <div id="<?php echo $tweet['id_str']; ?>" style="margin-bottom: 1em">
     <span>Orig: <?php echo $tweet['text']; ?></span><br>
     <span>Entitied: <?php echo $entified_tweet ?></span>
     <small><?php echo $tweet_link ?><?php if ($is_retweet) : ?>is retweet<?php endif; ?></small>
