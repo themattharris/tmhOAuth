@@ -25,6 +25,7 @@ $tmhOAuth = new tmhOAuth(array(
   'user_token'      => 'A_USER_TOKEN',
   'user_secret'     => 'A_USER_SECRET',
 ));
+$delegator = 'http://posterous.com/api2/upload.json';
 
 function generate_verify_header($tmhOAuth) {
   // generate the verify crendentials header -- BUT DON'T SEND
@@ -32,8 +33,6 @@ function generate_verify_header($tmhOAuth) {
   $tmhOAuth->config['prevent_request'] = true;
   $tmhOAuth->request('GET', $tmhOAuth->url('1/account/verify_credentials'));
   $tmhOAuth->config['prevent_request'] = false;
-  $tmhOAuth->pr($tmhOAuth);
-  die();
 }
 
 function prepare_request($tmhOAuth) {
@@ -48,7 +47,7 @@ function prepare_request($tmhOAuth) {
 
   // prepare the request to posterous
   $params = array(
-    'media' => "@{$_FILES['image']['tmp_name']};type={$_FILES['image']['type']};filename={$_FILES['image']['name']}",
+    'media' => "@{$_FILES['data']['tmp_name']};type={$_FILES['data']['type']};filename={$_FILES['data']['name']}",
     'message' => 'trying something out'
   );
 
@@ -73,12 +72,12 @@ if ( ! empty($_FILES)) {
   generate_verify_header($tmhOAuth);
   $params = prepare_request($tmhOAuth);
   // post to OAuth Echo provider
-  $resp = make_request($tmhOAuth, 'http://posterous.com/api2/upload.json', $params, false, true);
+  $resp = make_request($tmhOAuth, $delegator, $params, false, true);
 
   // post Tweet to Twitter
   if ($resp !== false) {
     $params = array(
-      'status' => 'I just OAuth echoed a picture: ' . $resp->url
+      'status' => 'I just OAuth echoed something: ' . $resp->url
     );
     $resp = make_request($tmhOAuth, $tmhOAuth->url('1/statuses/update'), $params, true, false);
 
@@ -93,7 +92,7 @@ if ( ! empty($_FILES)) {
 
 <form action="" method="POST" enctype="multipart/form-data">
   <div>
-    <input type="file" name="image" />
+    <input type="file" name="data" />
     <input type="submit" value="Submit" />
   </div>
 </form>
