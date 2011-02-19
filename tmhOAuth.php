@@ -637,14 +637,14 @@ class tmhOAuth {
    */
   function php_self($dropqs=true) {
     $url = sprintf('%s://%s%s',
-      $_SERVER['SERVER_PORT'] == 80 ? 'http' : 'https',
+      $_SERVER['HTTPS'] ? 'https' : 'http',
       $_SERVER['SERVER_NAME'],
       $_SERVER['REQUEST_URI']
     );
 
     $parts = parse_url($url);
 
-    $port = @$parts['port'];
+    $port = $_SERVER['SERVER_PORT'];
     $scheme = $parts['scheme'];
     $host = $parts['host'];
     $path = @$parts['path'];
