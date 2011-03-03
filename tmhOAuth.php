@@ -42,8 +42,11 @@ class tmhOAuth {
         'curl_timeout'               => 10,
         // for security you may want to set this to TRUE. If you do you need
         // to install the servers certificate in your local certificate store.
-        'curl_ssl_verifypeer'        => false,
+        'curl_ssl_verifypeer'        => true,
         'curl_followlocation'        => false, // whether to follow redirects or not
+        // support for proxy servers
+        'curl_proxy'                 => false, // really you don't want to use this if you are using streaming
+        'curl_proxyuserpwd'          => false, // format username:password for proxy, if required
 
         // streaming API
         'is_streaming'               => false,
@@ -545,11 +548,15 @@ class tmhOAuth {
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($c, CURLOPT_SSL_VERIFYPEER, $this->config['curl_ssl_verifypeer']);
     curl_setopt($c, CURLOPT_FOLLOWLOCATION, $this->config['curl_followlocation']);
+    curl_setopt($c, CURLOPT_PROXY, $this->config['curl_proxy']);
     curl_setopt($c, CURLOPT_URL, $this->url);
     // process the headers
     curl_setopt($c, CURLOPT_HEADERFUNCTION, array($this, 'curlHeader'));
     curl_setopt($c, CURLOPT_HEADER, FALSE);
     curl_setopt($c, CURLINFO_HEADER_OUT, true);
+
+    if ($htis->config['curl_proxyuserpwd'] !== false)
+      curl_setopt($c, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd']);
 
     if ($this->config['is_streaming']) {
       // process the body
@@ -586,9 +593,8 @@ class tmhOAuth {
     // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
     $this->headers[] = 'Expect:';
 
-    if ( ! empty($this->headers)) {
+    if ( ! empty($this->headers))
       curl_setopt($c, CURLOPT_HTTPHEADER, $this->headers);
-    }
 
     // do it!
     $response = curl_exec($c);
