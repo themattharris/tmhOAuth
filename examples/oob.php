@@ -32,7 +32,7 @@ EOM;
 }
 
 function request_token($tmhOAuth) {
-  $code = tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
+  $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
     'oauth_callback' => 'oob'
   ));
 
