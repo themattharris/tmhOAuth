@@ -31,14 +31,14 @@ $tmhOAuth = new tmhOAuth(array(
   'user_secret'     => 'A_USER_SECRET',
 ));
 
-$tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/user_timeline'), array(
+$code = $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/user_timeline'), array(
   'include_entities' => '1',
   'include_rts'      => '1',
   'screen_name'      => 'themattharris',
   'count'            => '1'
 ));
 
-if ($tmhOAuth->response['code'] == 200) {
+if ($code == 200) {
   $timeline = json_decode($tmhOAuth->response['response'], true);
   foreach ($timeline as $tweet) :
     $keys = array();

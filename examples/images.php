@@ -42,13 +42,13 @@ if ( ! empty($_FILES)) {
   if ($_POST['method'] == 'update_profile_background_image')
     $params['use'] = 'true';
 
-  $tmhOAuth->request('POST', $tmhOAuth->url("1/account/{$_POST['method']}"),
+  $code = $tmhOAuth->request('POST', $tmhOAuth->url("1/account/{$_POST['method']}"),
     $params,
     true, // use auth
     true  // multipart
   );
 
-  if ($tmhOAuth->response['code'] == 200) {
+  if ($code == 200) {
     $tmhOAuth->pr(json_decode($tmhOAuth->response['response']));
   }
   $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));

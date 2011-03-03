@@ -21,17 +21,6 @@ class tmhOAuth {
     $this->params = array();
     $this->auto_fixed_time = false;
 
-    // for ease of testing
-    if (file_exists(dirname(__FILE__).'/_account.php')) {
-      include '_account.php';
-      if (isset($_accounts) && $config['consumer_key'] == 'YOUR_CONSUMER_KEY') :
-        if ($config['user_token'] == 'A_USER_TOKEN')
-          $config = array_merge($config, $_accounts['test_with_user']);
-        else
-          $config = array_merge($config, $_accounts['test']);
-      endif;
-    }
-
     // default configuration options
     $this->config = array_merge(
       array(
@@ -347,7 +336,7 @@ class tmhOAuth {
     $this->create_timestamp();
 
     $this->sign($method, $url, $params, $useauth);
-    $this->curlit($multipart);
+    return $this->curlit($multipart);
   }
 
   /**
@@ -611,6 +600,7 @@ class tmhOAuth {
     $this->response['code'] = $code;
     $this->response['response'] = $response;
     $this->response['info'] = $info;
+    return $code;
   }
 
   /**

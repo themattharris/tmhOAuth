@@ -24,13 +24,13 @@ $tmhOAuth = new tmhOAuth(array(
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
 ));
 
-$tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
+$code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
   'x_auth_username' => '',
   'x_auth_password' => '',
   'x_auth_mode'     => 'client_auth'
 ));
 
-if ($tmhOAuth->response['code'] == 200) {
+if ($code == 200) {
   $tokens = $tmhOAuth->extract_params($tmhOAuth->response['response']);
   $tmhOAuth->pr($tokens);
 } else {

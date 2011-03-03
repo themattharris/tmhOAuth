@@ -26,9 +26,9 @@ $tmhOAuth = new tmhOAuth(array(
   'user_secret'     => 'A_USER_SECRET',
 ));
 
-$tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/home_timeline', 'rss'));
+$code = $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/home_timeline', 'rss'));
 
-if ($tmhOAuth->response['code'] == 200) {
+if ($code == 200) {
   header('Content-Type: application/rss+xml; charset=utf-8');
   echo $tmhOAuth->response['response'];
 } else {

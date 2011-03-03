@@ -26,11 +26,11 @@ $tmhOAuth = new tmhOAuth(array(
   'user_secret'     => 'A_USER_SECRET',
 ));
 
-$tmhOAuth->request('POST', $tmhOAuth->url('1/statuses/update'), array(
+$code = $tmhOAuth->request('POST', $tmhOAuth->url('1/statuses/update'), array(
   'status' => 'My Twitter Message'
 ));
 
-if ($tmhOAuth->response['code'] == 200) {
+if ($code == 200) {
   $tmhOAuth->pr(json_decode($tmhOAuth->response['response']));
 } else {
   $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));

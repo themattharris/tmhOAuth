@@ -27,9 +27,9 @@ $tmhOAuth = new tmhOAuth(array(
   'user_secret'     => 'A_USER_SECRET',
 ));
 
-$tmhOAuth->request('GET', $tmhOAuth->url('1/account/verify_credentials'));
+$code = $tmhOAuth->request('GET', $tmhOAuth->url('1/account/verify_credentials'));
 
-if ($tmhOAuth->response['code'] == 200) {
+if ($code == 200) {
   $tmhOAuth->pr(json_decode($tmhOAuth->response['response']));
 } else {
   $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));

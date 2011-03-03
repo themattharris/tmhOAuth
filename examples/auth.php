@@ -60,11 +60,11 @@ if ( isset($_REQUEST['wipe'])) {
 } elseif ( isset($_REQUEST['signin']) || isset($_REQUEST['allow']) ) {
   $callback = isset($_REQUEST['oob']) ? 'oob' : $here;
 
-  $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
+  $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
     'oauth_callback' => $callback
   ));
 
-  if ($tmhOAuth->response['code'] == 200) {
+  if ($code == 200) {
     $_SESSION['oauth'] = $tmhOAuth->extract_params($tmhOAuth->response['response']);
     $method = isset($_REQUEST['signin']) ? 'authenticate' : 'authorize';
     $force  = isset($_REQUEST['force']) ? '&force_login=1' : '';

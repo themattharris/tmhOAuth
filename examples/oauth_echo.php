@@ -56,10 +56,10 @@ function prepare_request($tmhOAuth) {
 
 function make_request($tmhOAuth, $url, $params, $auth, $multipart) {
   // make the request, no auth, multipart, custom headers
-  $tmhOAuth->request('POST', $url, $params, $auth, $multipart);
+  $code = $tmhOAuth->request('POST', $url, $params, $auth, $multipart);
 
   // Posterous liked it or not?
-  if ($tmhOAuth->response['code'] == 200)
+  if ($code == 200)
     return json_decode($tmhOAuth->response['response']);
 
   return false;

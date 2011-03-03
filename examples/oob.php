@@ -32,11 +32,11 @@ EOM;
 }
 
 function request_token($tmhOAuth) {
-  $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
+  $code = tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
     'oauth_callback' => 'oob'
   ));
 
-  if ($tmhOAuth->response['code'] == 200) {
+  if ($code == 200) {
     $oauth_creds = $tmhOAuth->extract_params($tmhOAuth->response['response']);
 
     // update with the temporary token and secret
@@ -62,11 +62,11 @@ function access_token($tmhOAuth) {
   $pin = fgets($handle);
 
   echo $pin;
-  $tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
+  $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
     'oauth_verifier' => trim($pin)
   ));
 
-  if ($tmhOAuth->response['code'] == 200) {
+  if ($code == 200) {
     $oauth_creds = $tmhOAuth->extract_params($tmhOAuth->response['response']);
 
     // print tokens
