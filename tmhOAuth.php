@@ -615,14 +615,17 @@ class tmhOAuth {
    * @param mixes $obj
    */
   function pr($obj) {
-    echo '<pre style="word-wrap: break-word">';
+    $cli = (PHP_SAPI == 'cli' && empty($_SERVER['REMOTE_ADDR']));
+    if (!$cli)
+      echo '<pre style="word-wrap: break-word">';
     if ( is_object($obj) )
       print_r($obj);
     elseif ( is_array($obj) )
       print_r($obj);
     else
       echo $obj;
-    echo '</pre>';
+    if (!$cli)
+      echo '</pre>';
   }
 
   /**
