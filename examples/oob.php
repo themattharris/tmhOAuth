@@ -58,7 +58,7 @@ EOM;
 }
 
 function access_token($tmhOAuth) {
-  $handle = fopen ("php://stdin","r");
+  $handle = fopen("php://stdin","r");
   $pin = fgets($handle);
 
   echo $pin;
