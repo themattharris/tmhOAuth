@@ -555,7 +555,7 @@ class tmhOAuth {
     curl_setopt($c, CURLOPT_HEADER, FALSE);
     curl_setopt($c, CURLINFO_HEADER_OUT, true);
 
-    if ($htis->config['curl_proxyuserpwd'] !== false)
+    if ($this->config['curl_proxyuserpwd'] !== false)
       curl_setopt($c, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd']);
 
     if ($this->config['is_streaming']) {
