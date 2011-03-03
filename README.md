@@ -26,6 +26,15 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.4   Fixed handling of parameters when using DELETE. Thanks to yusuke for reporting
+      Fixed php_self to handle port numbers other than 80/443. Props: yusuke
+      Updated function pr to use pre only when not running in CLI mode
+      Add support for proxy servers. Props juanchorossi
+      Function request now returns the HTTP status code. Props: kronenthaler
+      Documentation fixes for xAuth. Props: 140dev
+      Some minor code formatting changes
+      03 March 2011
+
 0.3   Moved entities rendering into the library
       28 September 2010
 
@@ -64,3 +73,4 @@ Check out the Twitter Developer Resources: <http://dev.twitter.com>
 - Add good behavior logic to the Streaming API handler - i.e. on disconnect back off
 - Add demo of responsible rate limit handling
 - Async Curl support
+- Split Utilities functions out

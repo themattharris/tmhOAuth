@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.3
+ * @version 0.4
  *
- * 28 September 2010
+ * 03 March 2011
  */
 class tmhOAuth {
   /**
@@ -516,13 +516,12 @@ class tmhOAuth {
    * @return void response data is stored in the class variable 'response'
    */
   private function curlit() {
-    if (@$this->config['prevent_request'])
-      return;
-
     // method handling
     switch ($this->method) {
-      case 'GET':
-        // GET request so convert the parameters to a querystring
+      case 'POST':
+        break;
+      default:
+        // GET, DELETE request so convert the parameters to a querystring
         if ( ! empty($this->request_params)) {
           foreach ($this->request_params as $k => $v) {
             // Multipart params haven't been encoded yet.
@@ -539,6 +538,9 @@ class tmhOAuth {
         }
         break;
     }
+
+    if (@$this->config['prevent_request'])
+      return;
 
     // configure curl
     $c = curl_init();
