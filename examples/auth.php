@@ -14,10 +14,7 @@
  *      http://dev.twitter.com/apps
  * 2) From the application details page copy the consumer key and consumer
  *      secret into the place in this code marked with (YOUR_CONSUMER_KEY
- *      and YOUR_CONSUMER_SECRET)
- * 3) Fill in the username and password of the user you wish to obtain
- *      the user token and secret for.
- * 4) Visit this page using your web browser.
+ * 3) Visit this page using your web browser.
  *
  * @author themattharris
  */
