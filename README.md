@@ -26,40 +26,40 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
-0.4   Fixed handling of parameters when using DELETE. Thanks to yusuke for reporting
+0.4   03 March 2011
+      Fixed handling of parameters when using DELETE. Thanks to yusuke for reporting
       Fixed php_self to handle port numbers other than 80/443. Props: yusuke
       Updated function pr to use pre only when not running in CLI mode
       Add support for proxy servers. Props juanchorossi
       Function request now returns the HTTP status code. Props: kronenthaler
       Documentation fixes for xAuth. Props: 140dev
       Some minor code formatting changes
-      03 March 2011
 
-0.3   Moved entities rendering into the library
-      28 September 2010
+0.3   28 September 2010
+      Moved entities rendering into the library
 
-0.2   Added support for the Streaming API
-      17 September 2010
+0.2   17 September 2010
+      Added support for the Streaming API
 
-0.14  Fixed authorisation header for use with OAuth Echo
-      17 September 2010
+0.14  17 September 2010
+      Fixed authorisation header for use with OAuth Echo
 
-0.13  Added use_ssl configuration parameter
+0.13  17 September 2010
+      Added use_ssl configuration parameter
       Fixed config array typo
       Removed v from the config
       Remove protocol from the host (configured by use_ssl)
       Added include for easier debugging
-      17 September 2010
 
-0.12  Moved curl options to config
+0.12  17 September 2010
+      Moved curl options to config
       Added the ability for curl to follow redirects, default false
-      17 September 2010
 
-0.11  Fixed a bug in the GET requests
-      17 September 2010
+0.11  17 September 2010
+      Fixed a bug in the GET requests
 
-0.1   Initial beta version
-      26 August 2010
+0.1   26 August 2010
+      Initial beta version
 
 ## Community
 
