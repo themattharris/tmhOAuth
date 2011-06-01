@@ -189,10 +189,10 @@ class tmhOAuth {
   private function prepare_url($url) {
     $parts = parse_url($url);
 
-    $port = @$parts['port'];
+    $port = isset($parts['port']) ? $parts['port'] : null;
     $scheme = $parts['scheme'];
     $host = $parts['host'];
-    $path = @$parts['path'];
+    $path = isset($parts['path']) ? $parts['path'] : null;
 
     $port or $port = ($scheme == 'https') ? '443' : '80';
 
@@ -539,7 +539,7 @@ class tmhOAuth {
         break;
     }
 
-    if (@$this->config['prevent_request'])
+    if (isset($this->config['prevent_request']) && $this->config['prevent_request'])
       return;
 
     // configure curl
@@ -648,8 +648,8 @@ class tmhOAuth {
     $port = $_SERVER['SERVER_PORT'];
     $scheme = $parts['scheme'];
     $host = $parts['host'];
-    $path = @$parts['path'];
-    $qs   = @$parts['query'];
+    $path = isset($parts['path']) ? $parts['path'] : null;
+    $qs   = isset($parts['query']) ? $parts['query'] : null;
 
     $port or $port = ($scheme == 'https') ? '443' : '80';
 
