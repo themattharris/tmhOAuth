@@ -34,4 +34,6 @@ if ($code == 200) {
 } else {
   $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
 }
+
+echo 'The access level of this token is: ' . $tmhOAuth->response['headers']['x_access_level'] . PHP_EOL;
 ?>
