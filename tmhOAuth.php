@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.5
+ * @version 0.51
  *
- * 29 March 2011
+ * 30 June 2011
  */
 class tmhOAuth {
   /**
@@ -197,10 +197,10 @@ class tmhOAuth {
   private function prepare_url($url) {
     $parts = parse_url($url);
 
-    $port = @$parts['port'];
+    $port   = isset($parts['port']) ? $parts['port'] : false;
     $scheme = $parts['scheme'];
-    $host = $parts['host'];
-    $path = @$parts['path'];
+    $host   = $parts['host'];
+    $path   = isset($parts['path']) ? $parts['path'] : false;
 
     $port or $port = ($scheme == 'https') ? '443' : '80';
 
@@ -522,7 +522,7 @@ class tmhOAuth {
         break;
     }
 
-    if (@$this->config['prevent_request'])
+    if (!isset($this->config['prevent_request']))
       return;
 
     // configure curl
