@@ -26,6 +26,15 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+0.5   29 March 2011
+      Moved utility functions out of the main class and into the tmhUtilities class.
+      Added the ability to send OAuth parameters as part of the querystring or POST body.
+      Section 3.4.1.2 says the url must be lowercase so prepare URL now does this.
+      Added a convenience method for accessing the safe_encode/decode transforms.
+      Updated the examples to use the new utilities library.
+      Added examples for sitestreams and userstreams.
+      Added a more advanced streaming API example.
+
 0.4   03 March 2011
       Fixed handling of parameters when using DELETE. Thanks to yusuke for reporting
       Fixed php_self to handle port numbers other than 80/443. Props: yusuke
