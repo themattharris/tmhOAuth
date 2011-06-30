@@ -3,6 +3,9 @@
 /**
  * Obtain the home_timeline RSS feed using OAuth
  *
+ * Although this example uses your user token/secret, you can use
+ * the user token/secret of any user who has authorised your application.
+ *
  * Instructions:
  * 1) If you don't have one already, create a Twitter application on
  *      http://dev.twitter.com/apps
@@ -19,6 +22,7 @@
  */
 
 require '../tmhOAuth.php';
+require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
   'consumer_key'    => 'YOUR_CONSUMER_KEY',
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -32,7 +36,7 @@ if ($code == 200) {
   header('Content-Type: application/rss+xml; charset=utf-8');
   echo $tmhOAuth->response['response'];
 } else {
-  $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
+  tmhUtilities::pr(htmlentities($tmhOAuth->response['response']));
 }
 
 ?>

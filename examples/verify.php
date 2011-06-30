@@ -4,6 +4,9 @@
  * Verify the user token and secret works. If successful we will be given the
  * details of the user. If not an error explaining why will be returned.
  *
+ * Although this example uses your user token/secret, you can use
+ * the user token/secret of any user who has authorised your application.
+ *
  * Instructions:
  * 1) If you don't have one already, create a Twitter application on
  *      http://dev.twitter.com/apps
@@ -20,6 +23,7 @@
  */
 
 require '../tmhOAuth.php';
+require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
   'consumer_key'    => 'YOUR_CONSUMER_KEY',
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -30,10 +34,10 @@ $tmhOAuth = new tmhOAuth(array(
 $code = $tmhOAuth->request('GET', $tmhOAuth->url('1/account/verify_credentials'));
 
 if ($code == 200) {
-  $tmhOAuth->pr(json_decode($tmhOAuth->response['response']));
+  echo 'The access level of this token is: ' . $tmhOAuth->response['headers']['x_access_level'] . PHP_EOL;
+  tmhUtilities::pr($tmhOAuth->response);
 } else {
-  $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
+  tmhUtilities::pr(htmlentities($tmhOAuth->response['response']));
 }
 
-echo 'The access level of this token is: ' . $tmhOAuth->response['headers']['x_access_level'] . PHP_EOL;
 ?>

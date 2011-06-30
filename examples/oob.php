@@ -16,6 +16,7 @@
  */
 
 require '../tmhOAuth.php';
+require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
   'consumer_key'    => 'YOUR_CONSUMER_KEY',
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -33,7 +34,7 @@ EOM;
 
 function request_token($tmhOAuth) {
   $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), array(
-    'oauth_callback' => 'oob'
+    'oauth_callback' => 'oob',
   ));
 
   if ($code == 200) {
@@ -49,7 +50,6 @@ function request_token($tmhOAuth) {
 Copy and paste this URL into your web browser and follower the prompts to get a pin code.
     {$url}
 
-What was the Pin Code?
 EOM;
   } else {
     echo "There was an error communicating with Twitter. {$tmhOAuth->response['response']}" . PHP_EOL;
@@ -57,11 +57,7 @@ EOM;
   }
 }
 
-function access_token($tmhOAuth) {
-  $handle = fopen("php://stdin","r");
-  $pin = fgets($handle);
-
-  echo $pin;
+function access_token($tmhOAuth, $pin) {
   $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
     'oauth_verifier' => trim($pin)
   ));
@@ -79,17 +75,16 @@ User Token: {$oauth_creds['oauth_token']}
 User Secret: {$oauth_creds['oauth_token_secret']}
 
 EOM;
-    $tmhOAuth->config['user_token']  = $_SESSION['access_token']['oauth_token'];
-    $tmhOAuth->config['user_secret'] = $_SESSION['access_token']['oauth_token_secret'];
   } else {
     echo "There was an error communicating with Twitter. {$tmhOAuth->response['response']}" . PHP_EOL;
   }
+  var_dump($tmhOAuth);
   die();
 }
 
 welcome();
 request_token($tmhOAuth);
-access_token($tmhOAuth);
-
+$pin = tmhUtilities::read_input('What was the Pin Code?: ');
+access_token($tmhOAuth, $pin);
 
 ?>

@@ -28,6 +28,7 @@ function my_streaming_callback($data, $length, $metrics) {
 }
 
 require '../tmhOAuth.php';
+require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
   'consumer_key'    => 'YOUR_CONSUMER_KEY',
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -48,6 +49,9 @@ $params = array(
 );
 
 $tmhOAuth->streaming_request('POST', $method, $params, 'my_streaming_callback');
-$tmhOAuth->pr($tmhOAuth);
+
+// output any response we get back AFTER the Stream has stopped -- or it errors
+tmhUtilities::pr($tmhOAuth);
+
 ?>
 

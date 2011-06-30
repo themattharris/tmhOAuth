@@ -19,6 +19,7 @@
  */
 
 require '../tmhOAuth.php';
+require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
   'consumer_key'    => 'YOUR_CONSUMER_KEY',
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -32,9 +33,9 @@ $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), arr
 
 if ($code == 200) {
   $tokens = $tmhOAuth->extract_params($tmhOAuth->response['response']);
-  $tmhOAuth->pr($tokens);
+  tmhUtilities::pr($tokens);
 } else {
-  $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
+  tmhUtilities::pr(htmlentities($tmhOAuth->response['response']));
 }
 
 ?>

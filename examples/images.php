@@ -8,6 +8,9 @@
 /**
  * Update the users profile image, or profile background image using OAuth.
  *
+ * Although this example uses your user token/secret, you can use
+ * the user token/secret of any user who has authorised your application.
+ *
  * Instructions:
  * 1) If you don't have one already, create a Twitter application on
  *      http://dev.twitter.com/apps
@@ -26,6 +29,7 @@
 if ( ! empty($_FILES)) {
 
   require '../tmhOAuth.php';
+  require '../tmhUtilities.php';
   $tmhOAuth = new tmhOAuth(array(
     'consumer_key'    => 'YOUR_CONSUMER_KEY',
     'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -49,9 +53,9 @@ if ( ! empty($_FILES)) {
   );
 
   if ($code == 200) {
-    $tmhOAuth->pr(json_decode($tmhOAuth->response['response']));
+    tmhUtilities::pr(json_decode($tmhOAuth->response['response']));
   }
-  $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
+  tmhUtilities::pr(htmlentities($tmhOAuth->response['response']));
 }
 
 ?>

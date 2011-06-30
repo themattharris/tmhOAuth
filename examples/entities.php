@@ -8,6 +8,9 @@
 /**
  * Render a very rough timeline with entities included.
  *
+ * Although this example uses your user token/secret, you can use
+ * the user token/secret of any user who has authorised your application.
+ *
  * Instructions:
  * 1) If you don't have one already, create a Twitter application on
  *      http://dev.twitter.com/apps
@@ -24,6 +27,7 @@
  */
 
 require '../tmhOAuth.php';
+require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
   'consumer_key'    => 'YOUR_CONSUMER_KEY',
   'consumer_secret' => 'YOUR_CONSUMER_SECRET',
@@ -35,68 +39,50 @@ $code = $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/user_timeline'), ar
   'include_entities' => '1',
   'include_rts'      => '1',
   'screen_name'      => 'themattharris',
-  'count'            => '1'
+  'count'            => 100,
 ));
 
 if ($code == 200) {
   $timeline = json_decode($tmhOAuth->response['response'], true);
   foreach ($timeline as $tweet) :
-    $keys = array();
-    $replacements = array();
-    $is_retweet = false;
+    $entified_tweet = tmhUtilities::entify($tweet);
+    $is_retweet = isset($tweet['retweeted_status']);
 
-    if (isset($tweet['retweeted_status'])) {
-      $tweet = $tweet['retweeted_status'];
-      $is_retweet = true;
-    }
+    $diff = time() - strtotime($tweet['created_at']);
+    if ($diff < 60*60)
+      $created_at = floor($diff/60) . ' minutes ago';
+    elseif ($diff < 60*60*24)
+      $created_at = floor($diff/(60*60)) . ' hours ago';
+    else
+      $created_at = date('d M', strtotime($tweet['created_at']));
 
-    // prepare the entities
-    foreach ($tweet['entities'] as $type => $things) {
-      foreach ($things as $entity => $value) {
-        $tweet_link = "<a href=\"http://twitter.com/{$value['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+    $permalink  = str_replace(
+      array(
+        '%screen_name%',
+        '%id%',
+        '%created_at%'
+      ),
+      array(
+        $tweet['user']['screen_name'],
+        $tweet['id_str'],
+        $created_at,
+      ),
+      '<a href="http://twitter.com/%screen_name%/%id%">%created_at%</a>'
+    );
 
-        switch ($type) {
-          case 'hashtags':
-            $href = "<a href=\"http://search.twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
-            break;
-          case 'user_mentions':
-            $href = "@<a href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
-            break;
-          case 'urls':
-            $url = empty($value['expanded_url']) ? $value['url'] : $value['expanded_url'];
-            $display = isset($value['display_url']) ? $value['display_url'] : str_replace('http://', '', $url);
-            // Not all pages are served in UTF-8 so you may need to do this ...
-            $display = urldecode(str_replace('%E2%80%A6', '&hellip;', urlencode($display)));
-            $href = "<a href=\"{$value['url']}\">{$display}</a>";
-            break;
-        }
-        $keys[$value['indices']['0']] = substr(
-          $tweet['text'],
-          $value['indices']['0'],
-          $value['indices']['1'] - $value['indices']['0']
-        );
-        $replacements[$value['indices']['0']] = $href;
-      }
-    }
-
-    ksort($replacements);
-    $replacements = array_reverse($replacements, true);
-    $entified_tweet = $tweet['text'];
-    foreach ($replacements as $k => $v) {
-      $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
-    }
   ?>
   <div id="<?php echo $tweet['id_str']; ?>" style="margin-bottom: 1em">
+    <span>ID: <?php echo $tweet['id_str']; ?></span><br>
     <span>Orig: <?php echo $tweet['text']; ?></span><br>
-    <span>Entitied: <?php echo $entified_tweet ?></span>
-    <small><?php echo $tweet_link ?><?php if ($is_retweet) : ?>is retweet<?php endif; ?></small>
+    <span>Entitied: <?php echo $entified_tweet ?></span><br>
+    <small><?php echo $permalink ?><?php if ($is_retweet) : ?>is retweet<?php endif; ?>
+    <span>via <?php echo $tweet['source']?></span></small>
   </div>
 <?php
   endforeach;
 } else {
-  $tmhOAuth->pr(htmlentities($tmhOAuth->response['response']));
+  tmhUtilities::pr($tmhOAuth->response);
 }
-
 ?>
 </body>
 </html>
