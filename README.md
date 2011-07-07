@@ -32,6 +32,9 @@ the library can be used. Each example contains instructions on how to use it
 
 ## Change History
 
+### 0.52 - 06 July 2011
+- Fixed issue where the preference for include_time in create_nonce was being ignored
+
 ### 0.51 - 06 July 2011
 - Use isset instead of suppress errors. Props: funkatron
 - Added example of using the Search API

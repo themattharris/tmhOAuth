@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.51
+ * @version 0.52
  *
- * 30 June 2011
+ * 05 July 2011
  */
 class tmhOAuth {
   /**
@@ -76,7 +76,9 @@ class tmhOAuth {
       $sequence = array_merge(range(0,9), range('A','Z'), range('a','z'));
       $length = $length > count($sequence) ? count($sequence) : $length;
       shuffle($sequence);
-      $this->config['nonce'] = md5(substr(microtime() . implode($sequence), 0, $length));
+
+      $prefix = $include_time ? microtime() : '';
+      $this->config['nonce'] = md5(substr($prefix . implode($sequence), 0, $length));
     }
   }
 
