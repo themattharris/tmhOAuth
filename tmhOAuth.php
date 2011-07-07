@@ -522,7 +522,7 @@ class tmhOAuth {
         break;
     }
 
-    if (!isset($this->config['prevent_request']))
+    if (isset($this->config['prevent_request']) && false == $this->config['prevent_request'])
       return;
 
     // configure curl
