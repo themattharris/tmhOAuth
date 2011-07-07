@@ -26,8 +26,11 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
-0.51  30 June 2011
+0.51  06 July 2011
       Use isset instead of suppress errors. Props: funkatron
+      Added example of using the Search API
+      Added example of using friends/ids and users/lookup to get details of a users friends
+      Added example of the authorize OAuth webflow
 
 0.5   29 March 2011
       Moved utility functions out of the main class and into the tmhUtilities class.
