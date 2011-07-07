@@ -4,18 +4,13 @@ date_default_timezone_set('GMT');
 
 require '../tmhOAuth.php';
 require '../tmhUtilities.php';
-$tmhOAuth = new tmhOAuth(array(
-  'consumer_key'    => 'YOUR_CONSUMER_KEY',
-  'consumer_secret' => 'YOUR_CONSUMER_SECRET',
-  'user_token'      => 'A_USER_TOKEN',
-  'user_secret'     => 'A_USER_SECRET',
-));
+$tmhOAuth = new tmhOAuth(array());
 
 $params = array(
   'q'        => 'Search Query',
   'since_id' => 'Get results since this ID (or leave blank for earliest allowed)',
   'pages'    => 'How many pages should be retrieved?',
-  'rpp'      => 'Results per page (default 100)',
+  'rpp'      => 'Results per page (default 15)',
   'max_id'   => 'Max ID to accept. This isn\'t sent to Search but instead used to filter the received results',
   'geocode'  => 'Geo co-ordinates (e.g. 37.781157,-122.398720,1mi)',
   'lang'     => 'Restrict results to a specific language? (en,fr,de etc)'
