@@ -32,7 +32,12 @@ function my_streaming_callback($data, $length, $metrics) {
 
 require '../tmhOAuth.php';
 require '../tmhUtilities.php';
-$tmhOAuth = new tmhOAuth();
+$tmhOAuth = new tmhOAuth(array(
+  'consumer_key'    => 'YOUR_CONSUMER_KEY',
+  'consumer_secret' => 'YOUR_CONSUMER_SECRET',
+  'user_token'      => 'A_USER_TOKEN',
+  'user_secret'     => 'A_USER_SECRET',
+));
 
 $method = "https://userstream.twitter.com/2/user.json";
 $params = array(
