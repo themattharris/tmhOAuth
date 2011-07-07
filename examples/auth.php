@@ -9,6 +9,10 @@
  * When the user next visits the site, or you wish to act on their behalf,
  * you would use those tokens and skip this entire process.
  *
+ * The Sign in with Twitter flow directs users to the oauth/authenticate
+ * endpoint which does not support the direct message permission. To obtain
+ * direct message permissions you must use the "Authorize Application" flows.
+ *
  * Instructions:
  * 1) If you don't have one already, create a Twitter application on
  *      http://dev.twitter.com/apps
@@ -99,10 +103,10 @@ if ( isset($_REQUEST['wipe'])) {
 <ul>
   <li><a href="?authenticate=1">Sign in with Twitter</a></li>
   <li><a href="?authenticate=1&amp;force=1">Sign in with Twitter (force login)</a></li>
-  <li><a href="?authorize=1">Allow Application (callback)</a></li>
-  <li><a href="?authorize=1&amp;oob=1">Allow Application (oob)</a></li>
-  <li><a href="?authorize=1&amp;force_read=1">Allow Application (callback) (read)</a></li>
-  <li><a href="?authorize=1&amp;force_write=1">Allow Application (callback) (write)</a></li>
-  <li><a href="?authorize=1&amp;force=1">Allow Application (callback) (force login)</a></li>
-  <li><a href="?wipe=1">Start Over</a></li>
+  <li><a href="?authorize=1">Authorize Application (with callback)</a></li>
+  <li><a href="?authorize=1&amp;oob=1">Authorize Application (oob - pincode flow)</a></li>
+  <li><a href="?authorize=1&amp;force_read=1">Authorize Application (with callback) (force read-only permissions)</a></li>
+  <li><a href="?authorize=1&amp;force_write=1">Authorize Application (with callback) (force read-write permissions)</a></li>
+  <li><a href="?authorize=1&amp;force=1">Authorize Application (with callback) (force login)</a></li>
+  <li><a href="?wipe=1">Start Over and delete stored tokens</a></li>
 </ul>
