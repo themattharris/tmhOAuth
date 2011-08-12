@@ -51,10 +51,11 @@ class tmhUtilities {
             $href = "<a href=\"{$value['url']}\">{$display}</a>";
             break;
         }
-        $keys[$value['indices']['0']] = substr(
+        $keys[$value['indices']['0']] = mb_substr(
           $tweet['text'],
           $value['indices']['0'],
-          $value['indices']['1'] - $value['indices']['0']
+          $value['indices']['1'] - $value['indices']['0'],
+	  'UTF-8'
         );
         $replacements[$value['indices']['0']] = $href;
       }
@@ -64,7 +65,10 @@ class tmhUtilities {
     $replacements = array_reverse($replacements, true);
     $entified_tweet = $tweet['text'];
     foreach ($replacements as $k => $v) {
-      $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
+      $text_pre_href = mb_substr($entified_tweet, 0, $k, 'UTF-8');
+      $pre_plus_href = $text_pre_href.$v;
+      $post_href_text = mb_substr($entified_tweet, $k + strlen($keys[$k]), strlen($entified_tweet), 'UTF-8');
+      $entified_tweet = $pre_plus_href.$post_href_text;
     }
     $replacements = array(
       'replacements' => $replacements,
