@@ -3,7 +3,10 @@
 An OAuth 1.0A library written in PHP by @themattharris, specifically for use
 with the Twitter API.
 
-**Important**: If you previously used version 0.4 be aware the utility functions
+**Important**: If you used custom HTTP request headers they should now be defined
+as `'key' => 'value'` pairs instead of complete `'key: value'` strings.
+
+If you previously used version 0.4 be aware the utility functions
 have now been broken into their own file. Before you use version 0.5+ in your app
 test locally to ensure your code doesn't need tmhUtilities included.
 
@@ -31,6 +34,11 @@ This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
 ## Change History
+
+### 0.53 - 15 July 2011
+- Fixed issue where headers were being duplicated if the library was called more than once.
+- Updated examples to fit the new location of access tokens and secrets on dev.twitter.com
+- Added Photo Tweet example
 
 ### 0.52 - 06 July 2011
 - Fixed issue where the preference for include_time in create_nonce was being ignored

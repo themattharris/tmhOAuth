@@ -6,6 +6,7 @@
  *
  * This example is intended to be run from the command line. To use it:
  *
+ * Instructions:
  * 1) If you don't have one already, create a Twitter application on
  *      http://dev.twitter.com/apps
  * 2) Note your the consumer key and consumer secret for the application

@@ -4,8 +4,9 @@
  * Obtain a users token and secret using xAuth.
  * This example is intended to be run from the command line. To use it:
  *
+ * Instructions:
  * 1) If you don't have one already, create a Twitter application on
- *      http://dev.twitter.com/apps
+ *      https://dev.twitter.com/apps
  * 2) From the application details page copy the consumer key and consumer
  *      secret into the place in this code marked with (YOUR_CONSUMER_KEY
  *      and YOUR_CONSUMER_SECRET)

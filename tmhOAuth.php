@@ -7,7 +7,7 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.52
+ * @version 0.53
  *
  * 05 July 2011
  */
@@ -19,6 +19,7 @@ class tmhOAuth {
    */
   function __construct($config) {
     $this->params = array();
+    $this->headers = array();
     $this->auto_fixed_time = false;
     $this->buffer = null;
 
@@ -305,7 +306,7 @@ class tmhOAuth {
       $kv[] = "{$k}=\"{$v}\"";
     }
     $this->auth_header = 'OAuth ' . implode(', ', $kv);
-    $this->headers[] = 'Authorization: ' . $this->auth_header;
+    $this->headers['Authorization'] = $this->auth_header;
   }
 
   /**
@@ -354,7 +355,7 @@ class tmhOAuth {
     $this->create_timestamp();
 
     $this->sign($method, $url, $params, $useauth);
-    return $this->curlit($multipart);
+    return $this->curlit();
   }
 
   /**
@@ -524,9 +525,6 @@ class tmhOAuth {
         break;
     }
 
-    if (isset($this->config['prevent_request']) && false == $this->config['prevent_request'])
-      return;
-
     // configure curl
     $c = curl_init();
     curl_setopt($c, CURLOPT_USERAGENT, "themattharris' HTTP Client");
@@ -573,15 +571,22 @@ class tmhOAuth {
       curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
     } else {
       // CURL will set length to -1 when there is no data, which breaks Twitter
-      $this->headers[] = 'Content-Type:';
-      $this->headers[] = 'Content-Length:';
+      $this->headers['Content-Type'] = '';
+      $this->headers['Content-Length'] = '';
     }
 
     // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
-    $this->headers[] = 'Expect:';
+    $this->headers['Expect'] = '';
 
-    if ( ! empty($this->headers))
-      curl_setopt($c, CURLOPT_HTTPHEADER, $this->headers);
+    if ( ! empty($this->headers)) {
+      foreach ($this->headers as $k => $v) {
+        $headers[] = trim($k . ': ' . $v);
+      }
+      curl_setopt($c, CURLOPT_HTTPHEADER, $headers);
+    }
+
+    if (isset($this->config['prevent_request']) && false == $this->config['prevent_request'])
+      return;
 
     // do it!
     $response = curl_exec($c);

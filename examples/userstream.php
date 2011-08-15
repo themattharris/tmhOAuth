@@ -9,19 +9,19 @@
  *
  * Instructions:
  * 1) If you don't have one already, create a Twitter application on
- *      http://dev.twitter.com/apps
+ *      https://dev.twitter.com/apps
  * 2) From the application details page copy the consumer key and consumer
  *      secret into the place in this code marked with (YOUR_CONSUMER_KEY
  *      and YOUR_CONSUMER_SECRET)
- * 4) Visit the 'My Access Token' screen linked to from your application
- *      details page
- * 5) Copy the user token and user secret into the place in this code marked
- *      with (A_USER_TOKEN and A_USER_SECRET)
- * 6) In a terminal or server type:
+ * 3) From the application details page copy the access token and access token
+ *      secret into the place in this code marked with (A_USER_TOKEN
+ *      and A_USER_SECRET)
+ * 4) In a terminal or server type:
  *      php /path/to/here/userstream.php
- * 7) To stop the Streaming API either press CTRL-C or, in the folder the
+ * 5) To stop the Streaming API either press CTRL-C or, in the folder the
  *      script is running from type:
  *      touch STOP
+ *
  * @author themattharris
  */
 
