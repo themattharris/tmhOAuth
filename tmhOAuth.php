@@ -9,7 +9,7 @@
  * @author themattharris
  * @version 0.53
  *
- * 05 July 2011
+ * 15 July 2011
  */
 class tmhOAuth {
   /**
