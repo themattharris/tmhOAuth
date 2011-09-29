@@ -36,7 +36,7 @@ $tmhOAuth = new tmhOAuth(array(
   'user_secret'     => 'A_USER_SECRET',
 ));
 
-$method = 'http://stream.twitter.com/1/statuses/filter.json';
+$method = 'https://stream.twitter.com/1/statuses/filter.json';
 
 // show Tweets which contan the word twitter OR have been geo-tagged within
 // the bounding box -122.41,37.77,-122.40,37.78 OR are by themattharris

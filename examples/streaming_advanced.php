@@ -63,7 +63,7 @@ $tmhOAuth = new tmhOAuth(array(
   'user_secret'     => 'A_USER_SECRET',
 ));
 
-$method = 'http://stream.twitter.com/1/statuses/filter.json';
+$method = 'https://stream.twitter.com/1/statuses/filter.json';
 $track     = tmhUtilities::read_input('Track terms. For multiple terms separate with commas (leave blank for none): ');
 $follow    = tmhUtilities::read_input('Follow accounts. For multiple accounts separate with commas (leave blank for none): ');
 $locations = tmhUtilities::read_input('Bounding boxes (leave blank for none): ');

@@ -7,9 +7,9 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.53
+ * @version 0.54
  *
- * 15 July 2011
+ * 29 September 2011
  */
 class tmhOAuth {
   /**
@@ -26,6 +26,7 @@ class tmhOAuth {
     // default configuration options
     $this->config = array_merge(
       array(
+        'user_agent'                 => 'tmhOAuth 0.54 - //github.com/themattharris/tmhOAuth',
         'consumer_key'               => '',
         'consumer_secret'            => '',
         'user_token'                 => '',
@@ -527,7 +528,7 @@ class tmhOAuth {
 
     // configure curl
     $c = curl_init();
-    curl_setopt($c, CURLOPT_USERAGENT, "themattharris' HTTP Client");
+    curl_setopt($c, CURLOPT_USERAGENT, $this->config['user_agent']);
     curl_setopt($c, CURLOPT_CONNECTTIMEOUT, $this->config['curl_connecttimeout']);
     curl_setopt($c, CURLOPT_TIMEOUT, $this->config['curl_timeout']);
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);

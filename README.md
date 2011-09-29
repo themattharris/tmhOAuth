@@ -33,7 +33,11 @@ of PHP is lower than this you should ask your hosting provider for an update.
 This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
-## Change History
+## Change History ##
+
+### 0.54 - 29 September 2011
+- User-Agent is now configurable and includes the current version number of the script
+- Updated the Streaming examples to use SSL
 
 ### 0.53 - 15 July 2011
 - Fixed issue where headers were being duplicated if the library was called more than once.
