@@ -35,6 +35,9 @@ the library can be used. Each example contains instructions on how to use it
 
 ## Change History ##
 
+### 0.55 - 29 September 2011
+- Added support for content encoding. Defaults to whatever localhost supports. Props: yusuke
+
 ### 0.54 - 29 September 2011
 - User-Agent is now configurable and includes the current version number of the script
 - Updated the Streaming examples to use SSL
