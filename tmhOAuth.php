@@ -7,11 +7,13 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.55
+ * @version 0.56
  *
  * 29 September 2011
  */
 class tmhOAuth {
+  const VERSION = 0.56;
+
   /**
    * Creates a new tmhOAuth object
    *
@@ -26,7 +28,7 @@ class tmhOAuth {
     // default configuration options
     $this->config = array_merge(
       array(
-        'user_agent'                 => 'tmhOAuth 0.54 - //github.com/themattharris/tmhOAuth',
+        'user_agent'                 => 'tmhOAuth ' . self::VERSION . ' - //github.com/themattharris/tmhOAuth',
         'consumer_key'               => '',
         'consumer_secret'            => '',
         'user_token'                 => '',

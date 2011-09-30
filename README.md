@@ -35,6 +35,11 @@ the library can be used. Each example contains instructions on how to use it
 
 ## Change History
 
+### 0.56 - 29 September 2011
+- Fixed version reference in the UserAgent
+- Updated tmhUtilities::entify with support for media
+- Updated tmhUtilities::entify with support for multibyte characters. Props: andersonshatch
+
 ### 0.55 - 29 September 2011
 - Added support for content encoding. Defaults to whatever localhost supports. Props: yusuke
 

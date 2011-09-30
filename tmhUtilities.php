@@ -5,12 +5,11 @@
  * Helpful utility and Twitter formatting functions
  *
  * @author themattharris
- * @version 0.1
+ * @version 0.2
  *
- * 29 March 2011
+ * 29 September 2011
  */
 class tmhUtilities {
-
   /**
    * Entifies the tweet using the given entities element
    *
@@ -18,6 +17,9 @@ class tmhUtilities {
    * @return the tweet text with entities replaced with hyperlinks
    */
   function entify($tweet, &$replacements=array()) {
+    $encoding = mb_internal_encoding();
+    mb_internal_encoding("UTF-8");
+
     $keys = array();
     // $replacements = array();
     $is_retweet = false;
@@ -34,16 +36,17 @@ class tmhUtilities {
     // prepare the entities
     foreach ($tweet['entities'] as $type => $things) {
       foreach ($things as $entity => $value) {
-        $tweet_link = "<a href=\"http://twitter.com/{$value['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+        $tweet_link = "<a href=\"http://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
 
         switch ($type) {
           case 'hashtags':
-            $href = "<a href=\"http://search.twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
+            $href = "<a href=\"http://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
             break;
           case 'user_mentions':
             $href = "@<a href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
             break;
           case 'urls':
+          case 'media':
             $url = empty($value['expanded_url']) ? $value['url'] : $value['expanded_url'];
             $display = isset($value['display_url']) ? $value['display_url'] : str_replace('http://', '', $url);
             // Not all pages are served in UTF-8 so you may need to do this ...
@@ -51,7 +54,7 @@ class tmhUtilities {
             $href = "<a href=\"{$value['url']}\">{$display}</a>";
             break;
         }
-        $keys[$value['indices']['0']] = substr(
+        $keys[$value['indices']['0']] = mb_substr(
           $tweet['text'],
           $value['indices']['0'],
           $value['indices']['1'] - $value['indices']['0']
@@ -64,12 +67,15 @@ class tmhUtilities {
     $replacements = array_reverse($replacements, true);
     $entified_tweet = $tweet['text'];
     foreach ($replacements as $k => $v) {
-      $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
+      // $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
+      $entified_tweet = mb_substr($entified_tweet, 0, $k).$v.mb_substr($entified_tweet, $k + strlen($keys[$k]));
     }
     $replacements = array(
       'replacements' => $replacements,
       'keys' => $keys
     );
+
+    mb_internal_encoding($encoding);
     return $entified_tweet;
   }
 
