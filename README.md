@@ -33,7 +33,7 @@ of PHP is lower than this you should ask your hosting provider for an update.
 This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
-## Change History ##
+## Change History
 
 ### 0.55 - 29 September 2011
 - Added support for content encoding. Defaults to whatever localhost supports. Props: yusuke
