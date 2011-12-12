@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.56
+ * @version 0.57
  *
- * 29 September 2011
+ * 11 December 2011
  */
 class tmhOAuth {
-  const VERSION = 0.56;
+  const VERSION = 0.57;
 
   /**
    * Creates a new tmhOAuth object
@@ -592,7 +592,7 @@ class tmhOAuth {
       curl_setopt($c, CURLOPT_HTTPHEADER, $headers);
     }
 
-    if (isset($this->config['prevent_request']) && false == $this->config['prevent_request'])
+    if (isset($this->config['prevent_request']) && true == $this->config['prevent_request'])
       return;
 
     // do it!
