@@ -55,7 +55,7 @@ if ($code != 200) {
   tmhUtilities::pr($tmhOAuth);
   die();
 }
-  
+
 $resp = json_decode($tmhOAuth->response['response']);
 $params = array(
   'status' => 'I just OAuth echoed a picture: ' . $resp->url
