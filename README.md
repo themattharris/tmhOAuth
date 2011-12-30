@@ -3,13 +3,6 @@
 An OAuth 1.0A library written in PHP by @themattharris, specifically for use
 with the Twitter API.
 
-**Important**: If you used custom HTTP request headers they should now be defined
-as `'key' => 'value'` pairs instead of complete `'key: value'` strings.
-
-If you previously used version 0.4 be aware the utility functions
-have now been broken into their own file. Before you use version 0.5+ in your app
-test locally to ensure your code doesn't need tmhUtilities included.
-
 **Disclaimer**: This project is a work in progress. Please use the issue tracker
 to report any enhancements or issues you encounter.
 
@@ -25,15 +18,49 @@ to report any enhancements or issues you encounter.
 The library has been tested with PHP 5.3+ and relies on CURL and hash_hmac. The
 vast majority of hosting providers include these libraries and run with PHP 5.1+.
 
-The code makes use of hash_hmac, which was introduced in PHP 5.1.2. If you version
+The code makes use of hash_hmac, which was introduced in PHP 5.1.2. If your version
 of PHP is lower than this you should ask your hosting provider for an update.
+
+## A note about security and SSL
+
+Version 0.60 hardens the security of the library and defaults `verify_ssl` to `true`.
+As some hosting providers do not provide the most current certificate root file
+it is now included in this repository. If the version is out of date OR you prefer
+to download the certificate roots yourself, you can get them
+from: http://curl.haxx.se/ca/cacert.pem
+
+Before upgrading the version of tmhOAuth that you use, be sure to verify the SSL
+handling works on your server by running the `examples/verify_ssl.php` script.
 
 ## Usage
 
 This will be built out later but for the moment review the examples for ways
 the library can be used. Each example contains instructions on how to use it
 
+## Notes for users of previous versions
+
+If you previously used version 0.4 be aware the utility functions
+have now been broken into their own file. Before you use version 0.5+ in your app
+test locally to ensure your code doesn't need tmhUtilities included.
+
+If you used custom HTTP request headers when they were defined as `'key: value'` strings
+you should now define them as `'key' => 'value'` pairs.
+
 ## Change History
+
+### 0.60 - 29 December 2011
+- Changed any use of implode to the preferred format of implode($glue, $pieces). Props: reedy
+- Moved oauth_verifier to the authorization header as shown in example of RFC 5849. Props: spacenick
+- added curl error and error number values to the $tmhOAuth->response object
+- added an example script for testing the SSL connection to twitter.com with the new SSL configuration of tmhOAuth
+- added a function to generate the useragent depending on whether SSL is on or not
+- defaulted CURLOPT_SSL_VERIFYPEER to true
+- added CURLOPT_SSL_VERIFYHOST and defaulted it to true
+- added the most current cacert.pem file from http://curl.haxx.se/ca/cacert.pem and configured curl to use it
+
+### 0.58 - 29 December 2011
+- Rearranged some configuration variables around to make commenting easier
+- Standarised on lowercase booleans
 
 ### 0.57 - 11 December 2011
 - Fixed prevent_request so OAuth Echo requests work again.
