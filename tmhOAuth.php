@@ -50,9 +50,13 @@ class tmhOAuth {
         'curl_connecttimeout'        => 30,
         'curl_timeout'               => 10,
 
-        // for security you may want to set this to TRUE. If you do you need
-        // to install the servers certificate in your local certificate store.
-        'curl_ssl_verifypeer'        => false,
+        // for security these should always be set to true.
+        'curl_ssl_verifyhost'        => true,
+        'curl_ssl_verifypeer'        => true,
+
+        // you can get the latest cacert.pem from here http://curl.haxx.se/ca/cacert.pem
+        'curl_cainfo'                => dirname(__FILE__) . '/cacert.pem',
+        'curl_capath'                => dirname(__FILE__),
 
         'curl_followlocation'        => false, // whether to follow redirects or not
 
@@ -544,6 +548,7 @@ class tmhOAuth {
       CURLOPT_TIMEOUT        => $this->config['curl_timeout'],
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_SSL_VERIFYPEER => $this->config['curl_ssl_verifypeer'],
+      CURLOPT_SSL_VERIFYHOST => $this->config['curl_ssl_verifyhost'],
 
       CURLOPT_FOLLOWLOCATION => $this->config['curl_followlocation'],
       CURLOPT_PROXY          => $this->config['curl_proxy'],
@@ -554,6 +559,12 @@ class tmhOAuth {
       CURLOPT_HEADER         => false,
       CURLINFO_HEADER_OUT    => true,
     ));
+
+    if ($this->config['curl_cainfo'] !== false)
+      curl_setopt($c, CURLOPT_CAINFO, $this->config['curl_cainfo']);
+
+    if ($this->config['curl_capath'] !== false)
+      curl_setopt($c, CURLOPT_CAPATH, $this->config['curl_capath']);
 
     if ($this->config['curl_proxyuserpwd'] !== false)
       curl_setopt($c, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd']);
