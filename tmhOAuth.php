@@ -28,7 +28,9 @@ class tmhOAuth {
     // default configuration options
     $this->config = array_merge(
       array(
-        'user_agent'                 => 'tmhOAuth ' . self::VERSION . ' - //github.com/themattharris/tmhOAuth',
+        // leave 'user_agent' blank for default, otherwise set this to
+        // something that clearly identifies your app
+        'user_agent'                 => '',
 
         'use_ssl'                    => true,
         'host'                       => 'api.twitter.com',
@@ -77,6 +79,21 @@ class tmhOAuth {
       ),
       $config
     );
+    $this->set_user_agent();
+  }
+
+  function set_user_agent() {
+    if (!empty($this->config['user_agent']))
+      return;
+
+    if ($this->config['curl_ssl_verifyhost'] && $this->config['curl_ssl_verifypeer']) {
+      $ssl = '+SSL';
+    } else {
+      $ssl = '-SSL';
+    }
+
+    $ua = 'tmhOAuth ' . self::VERSION . $ssl . ' - //github.com/themattharris/tmhOAuth';
+    $this->config['user_agent'] = $ua;
   }
 
   /**
