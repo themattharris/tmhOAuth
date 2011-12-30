@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.57
+ * @version 0.58
  *
- * 11 December 2011
+ * 29 December 2011
  */
 class tmhOAuth {
-  const VERSION = 0.57;
+  const VERSION = 0.58;
 
   /**
    * Creates a new tmhOAuth object
@@ -29,26 +29,33 @@ class tmhOAuth {
     $this->config = array_merge(
       array(
         'user_agent'                 => 'tmhOAuth ' . self::VERSION . ' - //github.com/themattharris/tmhOAuth',
+
+        'use_ssl'                    => true,
+        'host'                       => 'api.twitter.com',
+
         'consumer_key'               => '',
         'consumer_secret'            => '',
         'user_token'                 => '',
         'user_secret'                => '',
-        'use_ssl'                    => true,
-        'host'                       => 'api.twitter.com',
-        'debug'                      => false,
         'force_nonce'                => false,
         'nonce'                      => false, // used for checking signatures. leave as false for auto
         'force_timestamp'            => false,
         'timestamp'                  => false, // used for checking signatures. leave as false for auto
+
+        // oauth signing variables that are not dynamic
         'oauth_version'              => '1.0',
+        'oauth_signature_method'     => 'HMAC-SHA1',
 
         // you probably don't want to change any of these curl values
         'curl_connecttimeout'        => 30,
         'curl_timeout'               => 10,
+
         // for security you may want to set this to TRUE. If you do you need
         // to install the servers certificate in your local certificate store.
         'curl_ssl_verifypeer'        => false,
+
         'curl_followlocation'        => false, // whether to follow redirects or not
+
         // support for proxy servers
         'curl_proxy'                 => false, // really you don't want to use this if you are using streaming
         'curl_proxyuserpwd'          => false, // format username:password for proxy, if required
@@ -59,10 +66,10 @@ class tmhOAuth {
         'streaming_eol'              => "\r\n",
         'streaming_metrics_interval' => 60,
 
-        // header or querystring. You should always use header
-        // this is just to help me debug other developers
-        // implementations
+        // header or querystring. You should always use header!
+        // this is just to help me debug other developers implementations
         'as_header'                  => true,
+        'debug'                      => false,
       ),
       $config
     );
@@ -146,7 +153,7 @@ class tmhOAuth {
       'oauth_nonce'            => $this->config['nonce'],
       'oauth_timestamp'        => $this->config['timestamp'],
       'oauth_consumer_key'     => $this->config['consumer_key'],
-      'oauth_signature_method' => 'HMAC-SHA1',
+      'oauth_signature_method' => $this->config['oauth_signature_method'],
     );
 
     // include the user token if it exists
@@ -535,15 +542,16 @@ class tmhOAuth {
       CURLOPT_USERAGENT      => $this->config['user_agent'],
       CURLOPT_CONNECTTIMEOUT => $this->config['curl_connecttimeout'],
       CURLOPT_TIMEOUT        => $this->config['curl_timeout'],
-      CURLOPT_RETURNTRANSFER => TRUE,
+      CURLOPT_RETURNTRANSFER => true,
       CURLOPT_SSL_VERIFYPEER => $this->config['curl_ssl_verifypeer'],
+
       CURLOPT_FOLLOWLOCATION => $this->config['curl_followlocation'],
       CURLOPT_PROXY          => $this->config['curl_proxy'],
       CURLOPT_ENCODING       => $this->config['curl_encoding'],
       CURLOPT_URL            => $this->url,
       // process the headers
       CURLOPT_HEADERFUNCTION => array($this, 'curlHeader'),
-      CURLOPT_HEADER         => FALSE,
+      CURLOPT_HEADER         => false,
       CURLINFO_HEADER_OUT    => true,
     ));
 
@@ -561,7 +569,7 @@ class tmhOAuth {
       case 'GET':
         break;
       case 'POST':
-        curl_setopt($c, CURLOPT_POST, TRUE);
+        curl_setopt($c, CURLOPT_POST, true);
         break;
       default:
         curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->method);
