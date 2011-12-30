@@ -247,5 +247,3 @@ class tmhUtilities {
     return substr_compare($haystack, $needle, -$needlelen) === 0;
   }
 }
-
-?>
