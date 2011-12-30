@@ -111,7 +111,7 @@ class tmhOAuth {
       shuffle($sequence);
 
       $prefix = $include_time ? microtime() : '';
-      $this->config['nonce'] = md5(substr($prefix . implode($sequence), 0, $length));
+      $this->config['nonce'] = md5(substr($prefix . implode('', $sequence), 0, $length));
     }
   }
 
