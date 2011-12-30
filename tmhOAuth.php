@@ -635,12 +635,16 @@ class tmhOAuth {
     $response = curl_exec($c);
     $code = curl_getinfo($c, CURLINFO_HTTP_CODE);
     $info = curl_getinfo($c);
+    $error = curl_error($c);
+    $errno = curl_errno($c);
     curl_close($c);
 
     // store the response
     $this->response['code'] = $code;
     $this->response['response'] = $response;
     $this->response['info'] = $info;
+    $this->response['error'] = $error;
+    $this->response['errno'] = $errno;
     return $code;
   }
 }
