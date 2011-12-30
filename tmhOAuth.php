@@ -289,6 +289,11 @@ class tmhOAuth {
       unset($_signing_params['oauth_callback']);
     }
 
+    if (isset($_signing_params['oauth_verifier'])) {
+      $this->auth_params['oauth_verifier'] = $_signing_params['oauth_verifier'];
+      unset($_signing_params['oauth_verifier']);
+    }
+
     // request_params is already set if we're doing multipart, if not we need to set them now
     if ( ! $this->config['multipart'])
       $this->request_params = array_diff_key($_signing_params, $this->get_defaults());
