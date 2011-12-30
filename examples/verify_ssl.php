@@ -15,7 +15,7 @@ $tmhOAuth = new tmhOAuth(array(
 // Make an SSL request to the Twitter API help/test endpoint
 $code = $tmhOAuth->request(
   'GET',
-  $tmhOAuth->url('1/help/test.json'),
+  $tmhOAuth->url('1/help/test'),
   array(),
   false
 );
