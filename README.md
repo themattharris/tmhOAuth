@@ -48,6 +48,10 @@ you should now define them as `'key' => 'value'` pairs.
 
 ## Change History
 
+### 0.61 - 16 January 2012
+- Removed trailing ?> from tmhOAuth.php and tmhUtilities.php to meet the Zend Framework's coding practices. Props: reedy
+- Fixed bug where CURLOPT_SSL_VERIFYHOST was defaulted to true when it should have been defaulted to 2. Props: kevinsmcarthur
+
 ### 0.60 - 29 December 2011
 - Changed any use of implode to the preferred format of implode($glue, $pieces). Props: reedy
 - Moved oauth_verifier to the authorization header as shown in example of RFC 5849. Props: spacenick
