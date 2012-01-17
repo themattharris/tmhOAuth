@@ -23,7 +23,7 @@ of PHP is lower than this you should ask your hosting provider for an update.
 
 ## A note about security and SSL
 
-Version 0.60 hardens the security of the library and defaults `verify_ssl` to `true`.
+Version 0.60 hardens the security of the library and defaults `curl_ssl_verifypeer` to `true`.
 As some hosting providers do not provide the most current certificate root file
 it is now included in this repository. If the version is out of date OR you prefer
 to download the certificate roots yourself, you can get them
