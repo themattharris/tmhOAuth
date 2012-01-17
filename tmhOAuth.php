@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.60
+ * @version 0.61
  *
- * 29 December 2011
+ * 16 January 2012
  */
 class tmhOAuth {
-  const VERSION = 0.60;
+  const VERSION = 0.61;
 
   /**
    * Creates a new tmhOAuth object
@@ -52,8 +52,9 @@ class tmhOAuth {
         'curl_connecttimeout'        => 30,
         'curl_timeout'               => 10,
 
-        // for security these should always be set to true.
-        'curl_ssl_verifyhost'        => true,
+        // for security this should always be set to 2.
+        'curl_ssl_verifyhost'        => 2,
+        // for security this should always be set to true.
         'curl_ssl_verifypeer'        => true,
 
         // you can get the latest cacert.pem from here http://curl.haxx.se/ca/cacert.pem
