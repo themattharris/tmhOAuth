@@ -30,7 +30,7 @@ require '../tmhUtilities.php';
 
 $tmhOAuth = new tmhOAuth(array(
   'curl_ssl_verifypeer' => true,
-  'curl_ssl_verifyhost' => true,
+  'curl_ssl_verifyhost' => 2,
 ));
 
 

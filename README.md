@@ -23,7 +23,7 @@ of PHP is lower than this you should ask your hosting provider for an update.
 
 ## A note about security and SSL
 
-Version 0.60 hardens the security of the library and defaults `verify_ssl` to `true`.
+Version 0.60 hardens the security of the library and defaults `curl_ssl_verifypeer` to `true`.
 As some hosting providers do not provide the most current certificate root file
 it is now included in this repository. If the version is out of date OR you prefer
 to download the certificate roots yourself, you can get them
@@ -47,6 +47,10 @@ If you used custom HTTP request headers when they were defined as `'key: value'`
 you should now define them as `'key' => 'value'` pairs.
 
 ## Change History
+
+### 0.61 - 16 January 2012
+- Removed trailing ?> from tmhOAuth.php and tmhUtilities.php to meet the Zend Framework's coding practices. Props: reedy
+- Fixed bug where CURLOPT_SSL_VERIFYHOST was defaulted to true when it should have been defaulted to 2. Props: kevinsmcarthur
 
 ### 0.60 - 29 December 2011
 - Changed any use of implode to the preferred format of implode($glue, $pieces). Props: reedy
