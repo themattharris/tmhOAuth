@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Retrieve a list of friends for the authenticating user and then lookup
+ * Retrieve a list of followers for the authenticating user and then lookup
  * their details using users/lookup.
  *
  * Although this example uses your user token/secret, you can use
@@ -50,7 +50,7 @@ while (true) :
   if ($cursor == '0')
     break;
 
-  $tmhOAuth->request('GET', $tmhOAuth->url('1/friends/ids'), array(
+  $tmhOAuth->request('GET', $tmhOAuth->url('1/followers/ids'), array(
     'cursor' => $cursor
   ));
 
