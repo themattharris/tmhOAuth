@@ -59,7 +59,7 @@ while (true) :
 
   if ($tmhOAuth->response['code'] == 200) {
     $data = json_decode($tmhOAuth->response['response'], true);
-    $ids += $data['ids'];
+    $ids = array_merge($ids, $data['ids']);
     $cursor = $data['next_cursor_str'];
   } else {
     echo $tmhOAuth->response['response'];
@@ -82,7 +82,7 @@ for ($i=0; $i < $paging ; $i++) {
 
   if ($tmhOAuth->response['code'] == 200) {
     $data = json_decode($tmhOAuth->response['response'], true);
-    $users += $data;
+    $users = array_merge($users, $data);
   } else {
     echo $tmhOAuth->response['response'];
     break;
