@@ -86,8 +86,9 @@ class tmhUtilities {
    * @return string the current URL
    */
   function php_self($dropqs=true) {
+    $httpsswitch=$_SERVER['HTTPS'];
     $url = sprintf('%s://%s%s',
-      empty($_SERVER['HTTPS']) ? (@$_SERVER['SERVER_PORT'] == '443' ? 'https' : 'http') : 'http',
+      empty($httpsswitch) ? (@$_SERVER['SERVER_PORT'] == '443' ? 'https' : 'http') : ($httpsswitch=='on'?'https':'http'),
       $_SERVER['SERVER_NAME'],
       $_SERVER['REQUEST_URI']
     );
