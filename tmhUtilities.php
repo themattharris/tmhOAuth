@@ -41,20 +41,20 @@ class tmhUtilities {
     }
 	
 	if(!empty($this->linkTarget)) {
-		$target = "target=\"{$this->linkTarget}\"";
+		$this->linkTarget = "target=\"{$this->linkTarget}\"";
 	}
 
     // prepare the entities
     foreach ($tweet['entities'] as $type => $things) {
       foreach ($things as $entity => $value) {
-        $tweet_link = "<a $target href=\"http://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+        $tweet_link = "<a {$this->linkTarget} href=\"http://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
 
         switch ($type) {
           case 'hashtags':
-            $href = "<a $target href=\"http://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
+            $href = "<a {$this->linkTarget} href=\"http://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
             break;
           case 'user_mentions':
-            $href = "@<a $target href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
+            $href = "@<a {$this->linkTarget} href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
             break;
           case 'urls':
           case 'media':
@@ -62,7 +62,7 @@ class tmhUtilities {
             $display = isset($value['display_url']) ? $value['display_url'] : str_replace('http://', '', $url);
             // Not all pages are served in UTF-8 so you may need to do this ...
             $display = urldecode(str_replace('%E2%80%A6', '&hellip;', urlencode($display)));
-            $href = "<a $target href=\"{$value['url']}\">{$display}</a>";
+            $href = "<a {$this->linkTarget} href=\"{$value['url']}\">{$display}</a>";
             break;
         }
         $keys[$value['indices']['0']] = mb_substr(
