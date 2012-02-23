@@ -10,13 +10,20 @@
  * 29 September 2011
  */
 class tmhUtilities {
+  
+  /**
+   *
+   * @var string Target for links created by entify()
+   */
+  public $linkTarget = "";
+  
   /**
    * Entifies the tweet using the given entities element
    *
    * @param array $tweet the json converted to normalised array
    * @return the tweet text with entities replaced with hyperlinks
    */
-  function entify($tweet, &$replacements=array(), $target = "") {
+  function entify($tweet, &$replacements=array()) {
     $encoding = mb_internal_encoding();
     mb_internal_encoding("UTF-8");
 
@@ -33,8 +40,8 @@ class tmhUtilities {
       return $tweet['text'];
     }
 	
-	if(!empty($target)) {
-		$target = "target=\"$target\"";
+	if(!empty($this->linkTarget)) {
+		$target = "target=\"{$this->linkTarget}\"";
 	}
 
     // prepare the entities
