@@ -16,7 +16,7 @@ class tmhUtilities {
    * @param array $tweet the json converted to normalised array
    * @return the tweet text with entities replaced with hyperlinks
    */
-  function entify($tweet, &$replacements=array()) {
+  function entify($tweet, &$replacements=array(), $target = "") {
     $encoding = mb_internal_encoding();
     mb_internal_encoding("UTF-8");
 
@@ -32,18 +32,22 @@ class tmhUtilities {
     if (!isset($tweet['entities'])) {
       return $tweet['text'];
     }
+	
+	if(!empty($target)) {
+		$target = "target=\"$target\"";
+	}
 
     // prepare the entities
     foreach ($tweet['entities'] as $type => $things) {
       foreach ($things as $entity => $value) {
-        $tweet_link = "<a href=\"http://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+        $tweet_link = "<a $target href=\"http://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
 
         switch ($type) {
           case 'hashtags':
-            $href = "<a href=\"http://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
+            $href = "<a $target href=\"http://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
             break;
           case 'user_mentions':
-            $href = "@<a href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
+            $href = "@<a $target href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
             break;
           case 'urls':
           case 'media':
@@ -51,7 +55,7 @@ class tmhUtilities {
             $display = isset($value['display_url']) ? $value['display_url'] : str_replace('http://', '', $url);
             // Not all pages are served in UTF-8 so you may need to do this ...
             $display = urldecode(str_replace('%E2%80%A6', '&hellip;', urlencode($display)));
-            $href = "<a href=\"{$value['url']}\">{$display}</a>";
+            $href = "<a $target href=\"{$value['url']}\">{$display}</a>";
             break;
         }
         $keys[$value['indices']['0']] = mb_substr(
