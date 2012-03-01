@@ -36,14 +36,14 @@ class tmhUtilities {
     // prepare the entities
     foreach ($tweet['entities'] as $type => $things) {
       foreach ($things as $entity => $value) {
-        $tweet_link = "<a href=\"http://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+        $tweet_link = "<a href=\"https://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
 
         switch ($type) {
           case 'hashtags':
-            $href = "<a href=\"http://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
+            $href = "<a href=\"https://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
             break;
           case 'user_mentions':
-            $href = "@<a href=\"http://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
+            $href = "@<a href=\"https://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
             break;
           case 'urls':
           case 'media':

@@ -66,7 +66,7 @@ if ($code == 200) {
         $tweet['id_str'],
         $created_at,
       ),
-      '<a href="http://twitter.com/%screen_name%/%id%">%created_at%</a>'
+      '<a href="https://twitter.com/%screen_name%/%id%">%created_at%</a>'
     );
 
   ?>
