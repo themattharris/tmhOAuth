@@ -2,7 +2,8 @@
 
 /**
  * Retrieve a list of friends for the authenticating user and then lookup
- * their details using users/lookup.
+ * their details using users/lookup. If you want to retrieve followers you
+ * can change the URL from '1/friends/ids' to '1/followers/ids'.
  *
  * Although this example uses your user token/secret, you can use
  * the user token/secret of any user who has authorised your application.
@@ -21,7 +22,7 @@
  * @author themattharris
  */
 
-define('PAGESIZE', 100);
+define('LOOKUP_SIZE', 100);
 
 require '../tmhOAuth.php';
 require '../tmhUtilities.php';
@@ -45,7 +46,6 @@ function check_rate_limit($response) {
 
 $cursor = '-1';
 $ids = array();
-
 while (true) :
   if ($cursor == '0')
     break;
@@ -59,19 +59,20 @@ while (true) :
 
   if ($tmhOAuth->response['code'] == 200) {
     $data = json_decode($tmhOAuth->response['response'], true);
-    $ids += $data['ids'];
+    $ids = array_merge($ids, $data['ids']);
     $cursor = $data['next_cursor_str'];
   } else {
     echo $tmhOAuth->response['response'];
     break;
   }
+  usleep(500000);
 endwhile;
 
 // lookup users
-$paging = ceil(count($ids) / PAGESIZE);
+$paging = ceil(count($ids) / LOOKUP_SIZE);
 $users = array();
 for ($i=0; $i < $paging ; $i++) {
-  $set = array_slice($ids, $i*PAGESIZE, PAGESIZE);
+  $set = array_slice($ids, $i*LOOKUP_SIZE, LOOKUP_SIZE);
 
   $tmhOAuth->request('GET', $tmhOAuth->url('1/users/lookup'), array(
     'user_id' => implode(',', $set)
@@ -82,7 +83,7 @@ for ($i=0; $i < $paging ; $i++) {
 
   if ($tmhOAuth->response['code'] == 200) {
     $data = json_decode($tmhOAuth->response['response'], true);
-    $users += $data;
+    $users = array_merge($users, $data);
   } else {
     echo $tmhOAuth->response['response'];
     break;
