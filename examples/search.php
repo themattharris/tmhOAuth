@@ -26,7 +26,7 @@ $pages = intval($p['pages']);
 $pages = $pages > 0 ? $pages : 1;
 $results = array();
 
-for ($i=$pages; $i > 0; $i--) {
+for ($i=1; $i < $pages; $i++) {
   $args = array_intersect_key(
     $p, array(
       'q'        => '',
@@ -48,15 +48,21 @@ for ($i=$pages; $i > 0; $i--) {
 
   if ($tmhOAuth->response['code'] == 200) {
     $data = json_decode($tmhOAuth->response['response'], true);
-    $results = array_merge($results, $data['results']);
+    foreach ($data['results'] as $tweet) {
+      $results[$tweet['id_str']] = $tweet;
+    }
   } else {
     $data = htmlentities($tmhOAuth->response['response']);
     echo 'There was an error.' . PHP_EOL;
     var_dump($data);
-    die();
+    break;
   }
 }
 
+$save = json_encode($results);
+file_put_contents('results.json', $save);
+
+echo count($results) . ' results' . PHP_EOL;
 foreach ($results as $result) {
   $date = strtotime($result['created_at']);
   $result['from_user'] = str_pad($result['from_user'], 15, ' ');
