@@ -11,17 +11,39 @@
  */
 class tmhUtilities {
   /**
-   * Entifies the tweet using the given entities element
+   * Entifies the tweet using the given entities element.
+   * Deprecated.
+   * You should instead use entify_with_options.
    *
    * @param array $tweet the json converted to normalised array
+   * @param array $replacements if specified, the entities and their replacements will be stored to this variable
    * @return the tweet text with entities replaced with hyperlinks
    */
   function entify($tweet, &$replacements=array()) {
+    return tmhUtilities::entify_with_options($tweet, array(), $replacements);
+  }
+
+  /**
+   * Entifies the tweet using the given entities element, using the provided
+   * options.
+   *
+   * @param array $tweet the json converted to normalised array
+   * @param array $options settings to be used when rendering the entities
+   * @param array $replacements if specified, the entities and their replacements will be stored to this variable
+   * @return the tweet text with entities replaced with hyperlinks
+   */
+  function entify_with_options($tweet, $options=array(), &$replacements=array()) {
+    $default_opts = array(
+      'encoding' => 'UTF-8',
+      'target'   => '',
+    );
+
+    $opts = array_merge($default_opts, $options);
+
     $encoding = mb_internal_encoding();
-    mb_internal_encoding("UTF-8");
+    mb_internal_encoding($opts['encoding']);
 
     $keys = array();
-    // $replacements = array();
     $is_retweet = false;
 
     if (isset($tweet['retweeted_status'])) {
@@ -33,17 +55,19 @@ class tmhUtilities {
       return $tweet['text'];
     }
 
+    $target = (!empty($opts['target'])) ? ' target="'.$opts['target'].'"' : '';
+
     // prepare the entities
     foreach ($tweet['entities'] as $type => $things) {
       foreach ($things as $entity => $value) {
-        $tweet_link = "<a href=\"https://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\">{$tweet['created_at']}</a>";
+        $tweet_link = "<a href=\"https://twitter.com/{$tweet['user']['screen_name']}/statuses/{$tweet['id']}\"{$target}>{$tweet['created_at']}</a>";
 
         switch ($type) {
           case 'hashtags':
-            $href = "<a href=\"https://twitter.com/search?q=%23{$value['text']}\">#{$value['text']}</a>";
+            $href = "<a href=\"https://twitter.com/search?q=%23{$value['text']}\"{$target}>#{$value['text']}</a>";
             break;
           case 'user_mentions':
-            $href = "@<a href=\"https://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\">{$value['screen_name']}</a>";
+            $href = "@<a href=\"https://twitter.com/{$value['screen_name']}\" title=\"{$value['name']}\"{$target}>{$value['screen_name']}</a>";
             break;
           case 'urls':
           case 'media':
@@ -51,7 +75,7 @@ class tmhUtilities {
             $display = isset($value['display_url']) ? $value['display_url'] : str_replace('http://', '', $url);
             // Not all pages are served in UTF-8 so you may need to do this ...
             $display = urldecode(str_replace('%E2%80%A6', '&hellip;', urlencode($display)));
-            $href = "<a href=\"{$value['url']}\">{$display}</a>";
+            $href = "<a href=\"{$value['url']}\"{$target}>{$display}</a>";
             break;
         }
         $keys[$value['indices']['0']] = mb_substr(
@@ -67,7 +91,6 @@ class tmhUtilities {
     $replacements = array_reverse($replacements, true);
     $entified_tweet = $tweet['text'];
     foreach ($replacements as $k => $v) {
-      // $entified_tweet = substr_replace($entified_tweet, $v, $k, strlen($keys[$k]));
       $entified_tweet = mb_substr($entified_tweet, 0, $k).$v.mb_substr($entified_tweet, $k + strlen($keys[$k]));
     }
     $replacements = array(

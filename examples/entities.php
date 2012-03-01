@@ -25,6 +25,8 @@
  * @author themattharris
  */
 
+date_default_timezone_set('UTC');
+
 require '../tmhOAuth.php';
 require '../tmhUtilities.php';
 $tmhOAuth = new tmhOAuth(array(
@@ -44,7 +46,7 @@ $code = $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/user_timeline'), ar
 if ($code == 200) {
   $timeline = json_decode($tmhOAuth->response['response'], true);
   foreach ($timeline as $tweet) :
-    $entified_tweet = tmhUtilities::entify($tweet);
+    $entified_tweet = tmhUtilities::entify_with_options($tweet);
     $is_retweet = isset($tweet['retweeted_status']);
 
     $diff = time() - strtotime($tweet['created_at']);
