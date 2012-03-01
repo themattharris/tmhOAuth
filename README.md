@@ -46,7 +46,15 @@ test locally to ensure your code doesn't need tmhUtilities included.
 If you used custom HTTP request headers when they were defined as `'key: value'` strings
 you should now define them as `'key' => 'value'` pairs.
 
-## Change History
+## Change History ##
+
+### 0.62 - 01 March 2012
+- Fix array merging bug. Props: julien-c
+- use is_callable instead of function_exists: Props: samwierema
+- Allow options to be specified for the entify function. Props: davidcroda
+- protocol was not inferred correctly for https when ['HTTPS'] == 'on'. Props: ospector
+- Switched to https for twitter.com display URLs
+- Improved the search results example
 
 ### 0.61 - 16 January 2012
 - Removed trailing ?> from tmhOAuth.php and tmhUtilities.php to meet the Zend Framework's coding practices. Props: reedy
