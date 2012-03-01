@@ -410,7 +410,7 @@ class tmhOAuth {
    */
   function streaming_request($method, $url, $params=array(), $callback='') {
     if ( ! empty($callback) ) {
-      if ( ! function_exists($callback) ) {
+      if ( ! is_callable($callback) ) {
         return false;
       }
       $this->config['streaming_callback'] = $callback;
@@ -516,7 +516,7 @@ class tmhOAuth {
     $this->metrics['tweets']++;
     $this->metrics['bytes'] += strlen($content);
 
-    if ( ! function_exists($this->config['streaming_callback']))
+    if ( ! is_callable($this->config['streaming_callback']))
       return 0;
 
     $metrics = $this->update_metrics();
