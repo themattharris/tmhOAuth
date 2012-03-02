@@ -6,7 +6,7 @@
  * Although this example uses your user token/secret, you can use
  * the user token/secret of any user who has authorised your application.
  *
- * Remember to set the variable $twitpic_key to be your TwitPic API Key from 
+ * Remember to set the variable $twitpic_key to be your TwitPic API Key from
  * here:
  *    http://dev.twitpic.com/apps/
  *
@@ -91,7 +91,7 @@ function prepare_request($tmhOAuth, $x_auth_service_provider, $key, $media, $med
 
   // prepare the request to the delegator
   $params = array(
-    'key'     => '',
+    'key'     => $key,
     'media'   => "@{$media};type={$media_type};filename={$media}",
     'message' => 'trying something out'
   );
