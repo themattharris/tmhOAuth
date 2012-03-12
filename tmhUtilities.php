@@ -5,9 +5,9 @@
  * Helpful utility and Twitter formatting functions
  *
  * @author themattharris
- * @version 0.3
+ * @version 0.4
  *
- * 01 March 2012
+ * 12 March 2012
  */
 class tmhUtilities {
   /**

@@ -48,6 +48,9 @@ you should now define them as `'key' => 'value'` pairs.
 
 ## Change History ##
 
+### 0.621 - 12 March 2012
+- Ensure $_SERVER['HTTPS'] isset before checking it's value. Props: kud
+
 ### 0.62 - 01 March 2012
 - Fix array merging bug. Props: julien-c
 - use is_callable instead of function_exists: Props: samwierema
