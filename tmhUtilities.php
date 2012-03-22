@@ -9,6 +9,8 @@
  *
  * 01 March 2012
  */
+namespace Tmhoauth;
+
 class tmhUtilities {
   /**
    * Entifies the tweet using the given entities element.
@@ -19,8 +21,8 @@ class tmhUtilities {
    * @param array $replacements if specified, the entities and their replacements will be stored to this variable
    * @return the tweet text with entities replaced with hyperlinks
    */
-  function entify($tweet, &$replacements=array()) {
-    return tmhUtilities::entify_with_options($tweet, array(), $replacements);
+  public function entify($tweet, &$replacements=array()) {
+    return self::entify_with_options($tweet, array(), $replacements);
   }
 
   /**
@@ -32,7 +34,7 @@ class tmhUtilities {
    * @param array $replacements if specified, the entities and their replacements will be stored to this variable
    * @return the tweet text with entities replaced with hyperlinks
    */
-  function entify_with_options($tweet, $options=array(), &$replacements=array()) {
+  public function entify_with_options($tweet, $options=array(), &$replacements=array()) {
     $default_opts = array(
       'encoding' => 'UTF-8',
       'target'   => '',
@@ -108,7 +110,7 @@ class tmhUtilities {
    * @param bool $dropqs whether to drop the querystring or not. Default true
    * @return string the current URL
    */
-  function php_self($dropqs=true) {
+  public function php_self($dropqs=true) {
     $protocol = 'http';
     if (strtolower($_SERVER['HTTPS']) == 'on') {
       $protocol = 'https';
@@ -143,7 +145,7 @@ class tmhUtilities {
       return $url;
   }
 
-  function is_cli() {
+  public function is_cli() {
     return (PHP_SAPI == 'cli' && empty($_SERVER['REMOTE_ADDR']));
   }
 
@@ -152,7 +154,7 @@ class tmhUtilities {
    *
    * @param mixes $obj
    */
-  function pr($obj) {
+  public function pr($obj) {
 
     if (!self::is_cli())
       echo '<pre style="word-wrap: break-word">';
@@ -184,7 +186,7 @@ class tmhUtilities {
    * @param string $useauth whether to use authentication when making the request. Default true.
    * @param string $multipart whether this request contains multipart data. Default false
    */
-  function auto_fix_time_request($tmhOAuth, $method, $url, $params=array(), $useauth=true, $multipart=false) {
+  public function auto_fix_time_request($tmhOAuth, $method, $url, $params=array(), $useauth=true, $multipart=false) {
     $tmhOAuth->request($method, $url, $params, $useauth, $multipart);
 
     // if we're not doing auth the timestamp isn't important
@@ -213,7 +215,7 @@ class tmhUtilities {
    * @param string $prompt the text to display to the user
    * @return the text entered by the user
    */
-  function read_input($prompt) {
+  public function read_input($prompt) {
     echo $prompt;
     $handle = fopen("php://stdin","r");
     $data = fgets($handle);
@@ -229,7 +231,7 @@ class tmhUtilities {
    * @return string
    * @url http://www.dasprids.de/blog/2008/08/22/getting-a-password-hidden-from-stdin-with-php-cli
    */
-  function read_password($prompt, $stars=false) {
+  public function read_password($prompt, $stars=false) {
     echo $prompt;
     $style = shell_exec('stty -g');
 
@@ -268,7 +270,7 @@ class tmhUtilities {
    * @param string $needle the string to check $haystack ends with
    * @return true if $haystack ends with $needle, false otherwise
    */
-  function endswith($haystack, $needle) {
+  public function endswith($haystack, $needle) {
     $haylen  = strlen($haystack);
     $needlelen = strlen($needle);
     if ($needlelen > $haylen)
