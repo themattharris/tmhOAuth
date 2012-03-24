@@ -11,7 +11,7 @@
  *
  * 01 March 2012
  */
-namespace Tmhoauth;
+namespace Themattharris/TmhOAuth;
 
 class tmhOAuth {
   const VERSION = 0.62;
