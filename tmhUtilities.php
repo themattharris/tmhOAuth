@@ -9,7 +9,7 @@
  *
  * 01 March 2012
  */
-namespace Themattharris/TmhOAuth;
+namespace Themattharris\TmhOAuth;
 
 class tmhUtilities {
   /**
