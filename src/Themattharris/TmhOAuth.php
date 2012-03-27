@@ -13,7 +13,7 @@
  */
 namespace Themattharris;
 
-class tmhOAuth {
+class TmhOAuth {
   const VERSION = 0.62;
 
   /**
