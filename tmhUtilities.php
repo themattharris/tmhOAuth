@@ -9,9 +9,9 @@
  *
  * 01 March 2012
  */
-namespace Themattharris\TmhOAuth;
+namespace Themattharris;
 
-class tmhUtilities {
+class TmhUtilities {
   /**
    * Entifies the tweet using the given entities element.
    * Deprecated.
