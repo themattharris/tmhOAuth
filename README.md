@@ -1,6 +1,6 @@
-# tmhOAuth
+# TmhOAuth
 
-An OAuth 1.0A library written in PHP by @themattharris, specifically for use
+An OAuth 1.0A library written in PHP by @themattharris, helped by @_erwann, specifically for use
 with the Twitter API.
 
 **Disclaimer**: This project is a work in progress. Please use the issue tracker
@@ -47,6 +47,11 @@ If you used custom HTTP request headers when they were defined as `'key: value'`
 you should now define them as `'key' => 'value'` pairs.
 
 ## Change History ##
+
+### 0.7 - 27 March 2012
+- Change all the structure to be good with PSR-0
+- Add namespace
+- Add composer
 
 ### 0.62 - 01 March 2012
 - Fix array merging bug. Props: julien-c

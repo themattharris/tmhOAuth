@@ -1,0 +1,20 @@
+{
+    "name": "themattharris/tmhoauth",
+    "description": "An OAuth 1.0A library written in PHP",
+    "authors": [
+        {
+            "name": "Matt Harris",
+            "email": "matt@themattharris.com"
+        },
+        {
+            "name": "Erwann MEST",
+            "email": "erwann.mest@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "Themattharris" : "src"
+        }
+    }
+}
