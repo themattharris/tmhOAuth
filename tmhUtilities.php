@@ -11,7 +11,7 @@
  */
 namespace Themattharris;
 
-class TmhUtilities {
+class tmhUtilities {
   /**
    * Entifies the tweet using the given entities element.
    * Deprecated.
