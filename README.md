@@ -13,7 +13,7 @@ to report any enhancements or issues you encounter.
 - Allow uploading of images
 - Provide enough information to assist with debugging
 
-## Dependancies
+## Dependencies
 
 The library has been tested with PHP 5.3+ and relies on CURL and hash_hmac. The
 vast majority of hosting providers include these libraries and run with PHP 5.1+.
