@@ -23,6 +23,7 @@
  */
 
 function my_streaming_callback($data, $length, $metrics) {
+  //$data can be empty when twitter sends a keep alive.
   echo $data .PHP_EOL;
   return file_exists(dirname(__FILE__) . '/STOP');
 }
@@ -42,7 +43,15 @@ $method = 'https://stream.twitter.com/1/statuses/filter.json';
 // the bounding box -122.41,37.77,-122.40,37.78 OR are by themattharris
 
 $params = array(
-  'track'     => 'twitter',
+  //matches tweets containing 'twitter' 'Twitter' '#Twitter'
+  'track'     => 'twitter',  
+  //matches tweets containing 'twitter' or 'love' (no spaces!)
+  //'track'   => 'twitter,love'
+  //matches tweets containing 'twitter' and 'love'
+  //'track'   =>'twitter love'
+  //Warning on extra spaces - below matches 'twitter' but not 'love'!
+  //'track'   =>'twitter, love'
+ 
   // Around Twitter HQ. First param is the SW corner of the bounding box
   'locations' => '-122.41,37.77,-122.40,37.78',
   'follow'    => '777925' // themattharris
