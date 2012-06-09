@@ -244,7 +244,7 @@ class tmhOAuth {
         || ($scheme == 'http' && $port != '80')) {
       $host = "$host:$port";
     }
-    $this->url = strtolower("$scheme://$host$path");
+    $this->url = "$scheme://$host$path";
   }
 
   /**
