@@ -244,7 +244,11 @@ class tmhOAuth {
         || ($scheme == 'http' && $port != '80')) {
       $host = "$host:$port";
     }
-    $this->url = strtolower("$scheme://$host$path");
+    
+    // the scheme and host MUST be lowercase
+    $this->url = strtolower("$scheme://$host");
+    // but not the path
+    $this->url .= $path;
   }
 
   /**
