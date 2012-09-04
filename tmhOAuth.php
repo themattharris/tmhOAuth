@@ -7,19 +7,21 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.621
+ * @version 0.7.0
  *
- * 12 March 2012
+ * 04 September 2012
  */
 class tmhOAuth {
-  const VERSION = 0.621;
+  const VERSION = '0.7.0';
+
+  var $response = array();
 
   /**
    * Creates a new tmhOAuth object
    *
    * @param string $config, the configuration to use for this request
    */
-  function __construct($config) {
+  public function __construct($config) {
     $this->params = array();
     $this->headers = array();
     $this->auto_fixed_time = false;
@@ -31,6 +33,8 @@ class tmhOAuth {
         // leave 'user_agent' blank for default, otherwise set this to
         // something that clearly identifies your app
         'user_agent'                 => '',
+        // default timezone for requests
+        'timezone'                   => 'UTC',
 
         'use_ssl'                    => true,
         'host'                       => 'api.twitter.com',
@@ -81,9 +85,11 @@ class tmhOAuth {
       $config
     );
     $this->set_user_agent();
+    date_default_timezone_set($this->config['timezone']);
+
   }
 
-  function set_user_agent() {
+  private function set_user_agent() {
     if (!empty($this->config['user_agent']))
       return;
 
@@ -196,7 +202,7 @@ class tmhOAuth {
    * @param string $body the response body from an OAuth flow method
    * @return array the response body safely decoded to an array of key => values
    */
-  function extract_params($body) {
+  public function extract_params($body) {
     $kvs = explode('&', $body);
     $decoded = array();
     foreach ($kvs as $kv) {
@@ -244,7 +250,11 @@ class tmhOAuth {
         || ($scheme == 'http' && $port != '80')) {
       $host = "$host:$port";
     }
-    $this->url = strtolower("$scheme://$host$path");
+
+    // the scheme and host MUST be lowercase
+    $this->url = strtolower("$scheme://$host");
+    // but not the path
+    $this->url .= $path;
   }
 
   /**
@@ -386,7 +396,7 @@ class tmhOAuth {
    * @param string $useauth whether to use authentication when making the request. Default true.
    * @param string $multipart whether this request contains multipart data. Default false
    */
-  function request($method, $url, $params=array(), $useauth=true, $multipart=false) {
+  public function request($method, $url, $params=array(), $useauth=true, $multipart=false) {
     $this->config['multipart'] = $multipart;
 
     $this->create_nonce();
@@ -408,7 +418,7 @@ class tmhOAuth {
    * @param array $params the request parameters as an array of key=value pairs
    * @param string $callback the callback function to stream the buffer to.
    */
-  function streaming_request($method, $url, $params=array(), $callback='') {
+  public function streaming_request($method, $url, $params=array(), $callback='') {
     if ( ! empty($callback) ) {
       if ( ! is_callable($callback) ) {
         return false;
@@ -428,7 +438,7 @@ class tmhOAuth {
   /**
    * Handles the updating of the current Streaming API metrics.
    */
-  function update_metrics() {
+  private function update_metrics() {
     $now = time();
     if (($this->metrics['interval_start'] + $this->config['streaming_metrics_interval']) > $now)
       return false;
@@ -449,7 +459,7 @@ class tmhOAuth {
    * @param string $format the format of the response. Default json. Set to an empty string to exclude the format
    * @return string the concatenation of the host, API version, API method and format
    */
-  function url($request, $format='json') {
+  public function url($request, $format='json') {
     $format = strlen($format) > 0 ? ".$format" : '';
     $proto  = $this->config['use_ssl'] ? 'https:/' : 'http:/';
 
@@ -471,7 +481,7 @@ class tmhOAuth {
    * @param string $mode the transformation mode. either encode or decode
    * @return the string as transformed by the given mode
    */
-  function transformText($text, $mode='encode') {
+  public function transformText($text, $mode='encode') {
     return $this->{"safe_$mode"}($text);
   }
 
@@ -484,6 +494,8 @@ class tmhOAuth {
    * @return the string length of the header
    */
   private function curlHeader($ch, $header) {
+    $this->response['raw'] .= $header;
+
     $i = strpos($header, ':');
     if ( ! empty($i) ) {
       $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
@@ -540,6 +552,8 @@ class tmhOAuth {
    * @return void response data is stored in the class variable 'response'
    */
   private function curlit() {
+    $this->response['raw'] = '';
+
     // method handling
     switch ($this->method) {
       case 'POST':
@@ -651,6 +665,12 @@ class tmhOAuth {
     $this->response['info'] = $info;
     $this->response['error'] = $error;
     $this->response['errno'] = $errno;
+
+    if (!isset($this->response['raw'])) {
+      $this->response['raw'] = '';
+    }
+    $this->response['raw'] .= $response;
+
     return $code;
   }
 }

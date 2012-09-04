@@ -23,7 +23,7 @@ of PHP is lower than this you should ask your hosting provider for an update.
 
 ## A note about security and SSL
 
-Version 0.60 hardens the security of the library and defaults `curl_ssl_verifypeer` to `true`.
+Version 0.60 hardened the security of the library and defaulted `curl_ssl_verifypeer` to `true`.
 As some hosting providers do not provide the most current certificate root file
 it is now included in this repository. If the version is out of date OR you prefer
 to download the certificate roots yourself, you can get them
@@ -34,8 +34,9 @@ handling works on your server by running the `examples/verify_ssl.php` script.
 
 ## Usage
 
-This will be built out later but for the moment review the examples for ways
-the library can be used. Each example contains instructions on how to use it
+This will be built out later but for the moment review the examples repository
+<https://github.com/themattharris/tmhOAuth-examples> for ways the library can be
+used. Each example contains instructions on how to use it.
 
 ## Notes for users of previous versions
 
@@ -46,10 +47,20 @@ test locally to ensure your code doesn't need tmhUtilities included.
 If you used custom HTTP request headers when they were defined as `'key: value'` strings
 you should now define them as `'key' => 'value'` pairs.
 
-## Change History ##
+## Change History
+### 0.7.0 - 04 September 2012
+- changed version numbers to x.y.z format
+- stronger method scoping (public and private)
+- Typo fix in depenencies. (Issue #42) Props: tantek
+- Only lowercase the host and scheme, and not path, in prepare_url. (Issue #56) Props: uzyn
+- Fixed a number of PHP warnings by changing some tmhUtilty methods to static. (Issue #52) Props: DrayChou
+- Raw headers and response body are now available as `$tmhOAuth->response['raw']`
+- Moved the examples to their own repository <https://github.com/themattharris/tmhOAuth-examples>
+- Removed the `noexamples` branch as master does not contain examples anymore
+- Introduced `$tmhOAuth->config['timezone']` and set `date_default_timezone_set`. (Issue #70) Props: iamctodd
 
 ### 0.621 - 12 March 2012
-- Ensure $_SERVER['HTTPS'] isset before checking it's value. Props: kud
+- Ensure `$_SERVER['HTTPS']` isset before checking it's value. Props: kud
 
 ### 0.62 - 01 March 2012
 - Fix array merging bug. Props: julien-c
@@ -159,7 +170,7 @@ you should now define them as `'key' => 'value'` pairs.
 License: Apache 2 (see included LICENSE file)
 
 Follow me on Twitter: <https://twitter.com/intent/follow?screen_name=themattharris>
-Check out the Twitter Developer Resources: <http://dev.twitter.com>
+Check out the Twitter Developer Resources: <https://dev.twitter.com>
 
 ## To Do
 
