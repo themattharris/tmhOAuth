@@ -1,6 +1,10 @@
 <?php
+namespace MattHarris\OAuth1;
+use \MattHarris\OAuth1\Utilities;
+use \MattHarris\OAuth1\OAuth;
+
 /**
- * tmhUtilities
+ * Utilities
  *
  * Helpful utility and Twitter formatting functions
  *
@@ -8,8 +12,12 @@
  * @version 0.5.0
  *
  * 04 September 2012
- */
-class tmhUtilities {
+ *
+ * NOTICE: This file has been modified by Conrad Kleinespel <conradk@conradk.com>.
+ *
+ **/
+
+class Utilities {
   const VERSION = '0.5.0';
   /**
    * Entifies the tweet using the given entities element.
@@ -21,7 +29,7 @@ class tmhUtilities {
    * @return the tweet text with entities replaced with hyperlinks
    */
   public static function entify($tweet, &$replacements=array()) {
-    return tmhUtilities::entify_with_options($tweet, array(), $replacements);
+    return Utilities::entify_with_options($tweet, array(), $replacements);
   }
 
   /**

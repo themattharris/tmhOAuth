@@ -1,6 +1,10 @@
 <?php
+namespace MattHarris\OAuth1;
+use \MattHarris\OAuth1\Utilities;
+use \MattHarris\OAuth1\OAuth;
+
 /**
- * tmhOAuth
+ * OAuth
  *
  * An OAuth 1.0A library written in PHP.
  * The library supports file uploading using multipart/form as well as general
@@ -10,14 +14,18 @@
  * @version 0.7.0
  *
  * 04 September 2012
- */
-class tmhOAuth {
+ *
+ * NOTICE: This file has been modified by Conrad Kleinespel <conradk@conradk.com>.
+ *
+ **/
+
+class OAuth {
   const VERSION = '0.7.0';
 
   var $response = array();
 
   /**
-   * Creates a new tmhOAuth object
+   * Creates a new OAuth object
    *
    * @param string $config, the configuration to use for this request
    */
