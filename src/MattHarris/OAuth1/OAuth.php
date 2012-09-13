@@ -107,7 +107,7 @@ class OAuth {
       $ssl = '-SSL';
     }
 
-    $ua = 'OAuth ' . self::VERSION . $ssl . ' - //github.com/themattharris/OAuth';
+    $ua = 'tmhOAuth ' . self::VERSION . $ssl . ' - //github.com/themattharris/tmhOAuth';
     $this->config['user_agent'] = $ua;
   }
 
