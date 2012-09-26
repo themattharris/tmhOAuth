@@ -1,0 +1,20 @@
+{
+    "name": "themattharris/tmhOAuth",
+    "description": "An OAuth 1.0A library written in PHP by @themattharris, specifically for use with the Twitter API.",
+    "type": "library",
+    "keywords": [
+        "twitter",
+        "oauth"
+    ],
+    "homepage": "https://github.com/themattharris/tmhOAuth",
+    "license": "Apache 2",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": [
+            "./tmhOAuth.php",
+            "./tmhUtilities.php"
+        ]
+    }
+}
