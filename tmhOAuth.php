@@ -15,6 +15,8 @@ class tmhOAuth {
   const VERSION = '0.7.0';
 
   var $response = array();
+  
+  var $delim = "";
 
   /**
    * Creates a new tmhOAuth object
@@ -26,6 +28,7 @@ class tmhOAuth {
     $this->headers = array();
     $this->auto_fixed_time = false;
     $this->buffer = null;
+    $this->delim = "-------------------" . uniqid();
 
     // default configuration options
     $this->config = array_merge(
@@ -630,14 +633,22 @@ class tmhOAuth {
           $ps[] = "{$k}={$v}";
         }
         $this->request_params = implode('&', $ps);
+        curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
       }
-      curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
+      else {
+          $formData = $this->buildPostFieldHeader();
+          $this->headers['Content-Type'] = 'multipart/form-data; boundary=' . $this->delim;
+          $this->headers['Content-Length'] = strlen($formData);
+          curl_setopt($c,CURLOPT_POSTFIELDS,$formData);
+      }
+      
+      
     } else {
       // CURL will set length to -1 when there is no data, which breaks Twitter
       $this->headers['Content-Type'] = '';
       $this->headers['Content-Length'] = '';
     }
-
+    
     // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
     $this->headers['Expect'] = '';
 
@@ -658,7 +669,7 @@ class tmhOAuth {
     $error = curl_error($c);
     $errno = curl_errno($c);
     curl_close($c);
-
+    
     // store the response
     $this->response['code'] = $code;
     $this->response['response'] = $response;
@@ -673,4 +684,89 @@ class tmhOAuth {
 
     return $code;
   }
+  
+  
+  
+  
+  /*
+   * Builds a custom HTTP header to POST.
+   * Although it is an ugly hack and is probably overkill, it solves the issue 
+   * of the @ symbol being interpreted differently by curl and twitter.
+   * 
+   * @return String $formData (including file attachments) as HTTP header.
+   * 
+   */
+  private function buildPostFieldHeader() {
+      
+      $formData = "";
+      
+      foreach ($this->request_params as $key => $param) {
+          
+          if (substr($param,0,1) == "@") {
+              @list($file,$type,$filename) = $this->getMediaAttribs($param);
+              if(!empty($file)) {
+                  $formData .= "--" . $this->delim . "\r\n";
+                  $formData .= 'Content-Disposition: form-data; name="' . $key . '"; filename="'.$filename.'"' . "\r\n";
+                  $formData .= 'Content-Type: ' . $type . "\r\n";
+                  $formData .= "\r\n";
+                  $formData .= file_get_contents($file) . "\r\n";
+              }
+              else { // It's not a file - it's a twitter username!
+                  $formData .= $this->textField($key,$param); // just a plain text field
+
+              }
+          } else {
+              $formData .= $this->textField($key,$param); // just a plain text field
+          }
+      }      
+      $formData .= "--" . $this->delim . "--\r\n\r\n"; // final post header delimiter
+      
+      return $formData;
+  }
+  
+  private function textField($key,$param) { 
+    $field .= "--" . $this->delim . "\r\n";
+    $field .= 'Content-Disposition: form-data; name="' . $key . '"';
+    $field .= "\r\n\r\n";
+    $field .= $param . "\r\n";
+
+    return $field;
+  }
+  
+  /*
+   * @param String $param
+   * @return Array: [$file, $type, $filename]
+   */
+  private function getMediaAttribs($param) {
+      
+      // if there are already semicolons in the string, the user has specified all of the required fields in the request.  
+      // No need to continue...
+      if (strpos($param,";")) {
+          $arr_res = explode(";",$param);
+          // strip the "@", we're not gonna need it where we're going
+          if (substr($arr_res[0],0,1) == "@") { 
+              $arr_res[0] = substr($arr_res[0],1,strlen($arr_res[0])); 
+          }
+          return $arr_res;
+      }
+          
+
+      $file = substr($param,1,strlen($param));
+      
+      // if the file doesn't exist, there's not much we can do about it, so just forget it - the twitter post is going to fail anyway
+      if (!file_exists($file)) 
+           return array(false,false,false);
+      
+      // we're going to have to get the mime type manually
+      // we'll also have to set $filename to be the same as the last part of the $file string
+      
+      $fileinfo = getimagesize($file);
+      $filetype = $fileinfo['mime'];
+      
+      $filename = substr($file,strrpos($file,'/'),strlen($file));
+      
+      return array($file,$filetype,$filename);
+
+  }
+  
 }
