@@ -48,6 +48,11 @@ If you used custom HTTP request headers when they were defined as `'key: value'`
 you should now define them as `'key' => 'value'` pairs.
 
 ## Change History
+### 0.7.1 - 27 October 2012
+- set content-length to 0 explictly to avoid a bug between libcurl and Twitter (Issue #94)
+- allow initialization without a configuration array (default config to array())
+- prevent ->url allowing double slashes in paths
+
 ### 0.7.0 - 04 September 2012
 - changed version numbers to x.y.z format
 - stronger method scoping (public and private)

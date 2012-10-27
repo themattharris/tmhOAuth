@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.7.0
+ * @version 0.7.1
  *
- * 04 September 2012
+ * 27 October 2012
  */
 class tmhOAuth {
-  const VERSION = '0.7.0';
+  const VERSION = '0.7.1';
 
   var $response = array();
 
@@ -21,7 +21,7 @@ class tmhOAuth {
    *
    * @param string $config, the configuration to use for this request
    */
-  public function __construct($config) {
+  public function __construct($config=array()) {
     $this->params = array();
     $this->headers = array();
     $this->auto_fixed_time = false;
@@ -467,6 +467,12 @@ class tmhOAuth {
     if (isset($this->config['v']))
       $this->config['host'] = $this->config['host'] . '/' . $this->config['v'];
 
+    $request = ltrim($request, '/');
+
+    $pos = strlen($request) - strlen($format);
+    if (substr($request, $pos) === $format)
+      $request = substr_replace($request, '', $pos);
+
     return implode('/', array(
       $proto,
       $this->config['host'],
@@ -633,9 +639,10 @@ class tmhOAuth {
       }
       curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
     } else {
-      // CURL will set length to -1 when there is no data, which breaks Twitter
+      // CURL will not set the content-length  (or set it to -1) when there is no data, which breaks Twitter
+      // override this and set the length to 0 in that case.
       $this->headers['Content-Type'] = '';
-      $this->headers['Content-Length'] = '';
+      $this->headers['Content-Length'] = '0';
     }
 
     // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
