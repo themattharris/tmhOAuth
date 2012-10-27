@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.7.1
+ * @version 0.7.2-devel
  *
  * 27 October 2012
  */
 class tmhOAuth {
-  const VERSION = '0.7.1';
+  const VERSION = '0.7.2-devel';
 
   var $response = array();
 

@@ -48,6 +48,9 @@ If you used custom HTTP request headers when they were defined as `'key: value'`
 you should now define them as `'key' => 'value'` pairs.
 
 ## Change History
+### 0.7.2 - TBD
+- use DIRECTORY_SEPARATOR for multi-environment support. (Issue #80) Props: whallz
+
 ### 0.7.1 - 27 October 2012
 - set content-length to 0 explictly to avoid a bug between libcurl and Twitter (Issue #94)
 - allow initialization without a configuration array (default config to array())
