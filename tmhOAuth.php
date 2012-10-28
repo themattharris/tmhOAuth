@@ -625,8 +625,8 @@ class tmhOAuth {
       case 'POST':
         curl_setopt($c, CURLOPT_POST, true);
 
-        // always initialize CURLOPT_POSTFIELDS when POSTing.
-        // if there are POST fields to send (request_params) we reset them below
+        // always initialise CURLOPT_POSTFIELDS when POSTing.
+        // if there are POST fields to send (request_params) we reset them in the next if block
         curl_setopt($c, CURLOPT_POSTFIELDS, null);
         break;
       default:
