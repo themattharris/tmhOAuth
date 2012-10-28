@@ -32,18 +32,18 @@
         "dist": {
           "url": "https://github.com/themattharris/tmhOAuth/zipball/0.7.2-devel",
           "type": "zip"
-        },  
+        },
         "source": {
           "url": "https://github.com/themattharris/tmhOAuth.git",
           "type": "git",
           "reference": "0.7.2-devel"
-        }   
-      }   
-    }   
+        }
+      }
+    }
   },
   "autoload": {
     "classmap": [
       "./tmhOAuth.php"
-    ] 
+    ]
   }
 }
