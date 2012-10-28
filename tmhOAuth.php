@@ -624,6 +624,10 @@ class tmhOAuth {
         break;
       case 'POST':
         curl_setopt($c, CURLOPT_POST, true);
+
+        // always initialize CURLOPT_POSTFIELDS when POSTing.
+        // if there are POST fields to send (request_params) we reset them below
+        curl_setopt($c, CURLOPT_POSTFIELDS, null);
         break;
       default:
         curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->method);
@@ -638,11 +642,6 @@ class tmhOAuth {
         $this->request_params = implode('&', $ps);
       }
       curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
-    } else {
-      // CURL will not set the content-length  (or set it to -1) when there is no data, which breaks Twitter
-      // override this and set the length to 0 in that case.
-      $this->headers['Content-Type'] = '';
-      $this->headers['Content-Length'] = '0';
     }
 
     // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
