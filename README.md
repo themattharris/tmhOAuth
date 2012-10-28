@@ -52,7 +52,7 @@ you should now define them as `'key' => 'value'` pairs.
 - use DIRECTORY_SEPARATOR for multi-environment support. (Issue #80) Props: whallz
 - tidied up the curlHeader function to use explode instead of substr and store the keys in the format they are returned from the API
 - remove content-length, and expects header hacks. these aren't needed if CURLOPT_POSTFIELDS is initialized on all POSTs.
-- introduce composer.json. (Issues #39, #77, #85) Props: akandels, conradkleinespel, dguyon, kud, philsturgeon, willdurand 
+- introduce composer.json. (Issues #39, #77, #85) Props: akandels, conradkleinespel, dguyon, kud, philsturgeon, willdurand
 
 ### 0.7.1 - 27 October 2012
 - set content-length to 0 explictly to avoid a bug between libcurl and Twitter (Issue #94)
