@@ -9,7 +9,7 @@
  * @author themattharris
  * @version 0.7.2-devel
  *
- * 27 October 2012
+ * 28 October 2012
  */
 class tmhOAuth {
   const VERSION = '0.7.2-devel';
