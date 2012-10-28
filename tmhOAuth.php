@@ -638,9 +638,6 @@ class tmhOAuth {
       curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
     }
 
-    // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
-    // $this->headers['Expect'] = '';
-
     if ( ! empty($this->headers)) {
       foreach ($this->headers as $k => $v) {
         $headers[] = trim($k . ': ' . $v);
