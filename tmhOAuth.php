@@ -502,12 +502,9 @@ class tmhOAuth {
   private function curlHeader($ch, $header) {
     $this->response['raw'] .= $header;
 
-    $i = strpos($header, ':');
-    if ( ! empty($i) ) {
-      $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
-      $value = trim(substr($header, $i + 2));
-      $this->response['headers'][$key] = $value;
-    }
+    list($key, $value) = array_pad(explode(':', $header, 2), 2, null);
+    $this->response['headers'][trim($key)] = trim($value);
+
     return strlen($header);
   }
 
@@ -624,10 +621,7 @@ class tmhOAuth {
         break;
       case 'POST':
         curl_setopt($c, CURLOPT_POST, true);
-
-        // always initialise CURLOPT_POSTFIELDS when POSTing.
-        // if there are POST fields to send (request_params) we reset them in the next if block
-        curl_setopt($c, CURLOPT_POSTFIELDS, null);
+        curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
         break;
       default:
         curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->method);
@@ -645,7 +639,7 @@ class tmhOAuth {
     }
 
     // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
-    $this->headers['Expect'] = '';
+    // $this->headers['Expect'] = '';
 
     if ( ! empty($this->headers)) {
       foreach ($this->headers as $k => $v) {
