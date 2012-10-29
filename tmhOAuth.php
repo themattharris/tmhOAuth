@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using the an Authorization Header.
  *
  * @author themattharris
- * @version 0.7.1
+ * @version 0.7.2-devel
  *
- * 27 October 2012
+ * 28 October 2012
  */
 class tmhOAuth {
-  const VERSION = '0.7.1';
+  const VERSION = '0.7.2-devel';
 
   var $response = array();
 
@@ -62,7 +62,7 @@ class tmhOAuth {
         'curl_ssl_verifypeer'        => true,
 
         // you can get the latest cacert.pem from here http://curl.haxx.se/ca/cacert.pem
-        'curl_cainfo'                => dirname(__FILE__) . '/cacert.pem',
+        'curl_cainfo'                => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cacert.pem',
         'curl_capath'                => dirname(__FILE__),
 
         'curl_followlocation'        => false, // whether to follow redirects or not
@@ -502,12 +502,9 @@ class tmhOAuth {
   private function curlHeader($ch, $header) {
     $this->response['raw'] .= $header;
 
-    $i = strpos($header, ':');
-    if ( ! empty($i) ) {
-      $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
-      $value = trim(substr($header, $i + 2));
-      $this->response['headers'][$key] = $value;
-    }
+    list($key, $value) = array_pad(explode(':', $header, 2), 2, null);
+    $this->response['headers'][trim($key)] = trim($value);
+
     return strlen($header);
   }
 
@@ -624,6 +621,7 @@ class tmhOAuth {
         break;
       case 'POST':
         curl_setopt($c, CURLOPT_POST, true);
+        curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
         break;
       default:
         curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->method);
@@ -638,15 +636,7 @@ class tmhOAuth {
         $this->request_params = implode('&', $ps);
       }
       curl_setopt($c, CURLOPT_POSTFIELDS, $this->request_params);
-    } else {
-      // CURL will not set the content-length  (or set it to -1) when there is no data, which breaks Twitter
-      // override this and set the length to 0 in that case.
-      $this->headers['Content-Type'] = '';
-      $this->headers['Content-Length'] = '0';
     }
-
-    // CURL defaults to setting this to Expect: 100-Continue which Twitter rejects
-    $this->headers['Expect'] = '';
 
     if ( ! empty($this->headers)) {
       foreach ($this->headers as $k => $v) {
