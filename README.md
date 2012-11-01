@@ -48,11 +48,13 @@ If you used custom HTTP request headers when they were defined as `'key: value'`
 you should now define them as `'key' => 'value'` pairs.
 
 ## Change History
-### 0.7.2 - TBD
+### 0.7.2 - 01 November 2012
 - use DIRECTORY_SEPARATOR for multi-environment support. (Issue #80) Props: whallz
 - tidied up the curlHeader function to use explode instead of substr and store the keys in the format they are returned from the API
-- remove content-length, and expects header hacks. these aren't needed if CURLOPT_POSTFIELDS is initialized on all POSTs.
+- removed content-length hack as it isn't needed if CURLOPT_POSTFIELDS is initialized on all POSTs
+- removed the expects header hack as Twitter no longer requires it to be there
 - introduce composer.json. (Issues #39, #77, #85) Props: akandels, conradkleinespel, dguyon, kud, philsturgeon, willdurand
+- added support for specifying custom headers when using $tmhOAuth->request. (Issue #98)
 
 ### 0.7.1 - 27 October 2012
 - set content-length to 0 explictly to avoid a bug between libcurl and Twitter (Issue #94)
@@ -180,8 +182,8 @@ you should now define them as `'key' => 'value'` pairs.
 
 License: Apache 2 (see [included LICENSE file](https://github.com/themattharris/tmhOAuth/blob/master/LICENSE))
 
-Follow [@tmhOAuth](https://twitter.com/intent/follow?screen_name=tmhOAuth) to receive updates on releases, or ask for support  
-Follow me on Twitter: [@themattharris](https://twitter.com/intent/follow?screen_name=themattharris)  
+Follow [@tmhOAuth](https://twitter.com/intent/follow?screen_name=tmhOAuth) to receive updates on releases, or ask for support
+Follow me on Twitter: [@themattharris](https://twitter.com/intent/follow?screen_name=themattharris)
 Check out the Twitter Developer Resources: <https://dev.twitter.com>
 
 ## To Do

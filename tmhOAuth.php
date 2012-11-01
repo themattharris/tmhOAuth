@@ -9,7 +9,7 @@
  * @author themattharris
  * @version 0.7.2-devel
  *
- * 28 October 2012
+ * 01 November 2012
  */
 class tmhOAuth {
   const VERSION = '0.7.2-devel';
@@ -392,17 +392,22 @@ class tmhOAuth {
    *
    * @param string $method the HTTP method being used. e.g. POST, GET, HEAD etc
    * @param string $url the request URL without query string parameters
-   * @param array $params the request parameters as an array of key=value pairs
-   * @param string $useauth whether to use authentication when making the request. Default true.
+   * @param array $params the request parameters as an array of key=value pairs. Default empty array
+   * @param string $useauth whether to use authentication when making the request. Default true
    * @param string $multipart whether this request contains multipart data. Default false
+   * @param array $headers any custom headers to send with the request. Default empty array
    */
-  public function request($method, $url, $params=array(), $useauth=true, $multipart=false) {
+  public function request($method, $url, $params=array(), $useauth=true, $multipart=false, $headers=array()) {
     $this->config['multipart'] = $multipart;
 
     $this->create_nonce();
     $this->create_timestamp();
 
     $this->sign($method, $url, $params, $useauth);
+
+    if (!empty($headers))
+      $this->headers = array_merge((array)$this->headers, (array)$headers);
+
     return $this->curlit();
   }
 
