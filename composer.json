@@ -1,0 +1,54 @@
+{
+  "name": "themattharris/tmhOAuth",
+  "extra": {
+     "branch-alias": {
+       "dev-master": "0.7.2-devel"
+     }
+  },
+  "type": "library",
+  "description": "An OAuth 1.0A library written in PHP by @themattharris, specifically for use with the Twitter API",
+  "version": "0.7.2",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Matt Harris",
+      "email": "matt@themattharris.com",
+      "role": "Developer"
+    }
+  ],
+  "keywords": [
+    "twitter",
+    "oauth"
+  ],
+  "support": {
+    "issues": "https://github.com/themattharris/tmhOAuth/issues"
+  },
+  "require": {
+    "php": ">=5.3.0",
+    "themattharris/tmhOAuth": "0.7.2"
+  },
+  "repositories": {
+    "tmhOAuth": {
+      "type": "package",
+      "package": {
+        "name": "themattharris/tmhOAuth",
+        "description": "An OAuth 1.0A library written in PHP by @themattharris, specifically for use with the Twitter API.",
+        "version": "0.7.2",
+        "dist": {
+          "url": "https://github.com/themattharris/tmhOAuth/zipball/0.7.2-devel",
+          "type": "zip"
+        },
+        "source": {
+          "url": "https://github.com/themattharris/tmhOAuth.git",
+          "type": "git",
+          "reference": "0.7.2"
+        }
+      }
+    }
+  },
+  "autoload": {
+    "classmap": [
+      "./tmhOAuth.php"
+    ]
+  }
+}
