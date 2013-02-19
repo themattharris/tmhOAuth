@@ -47,7 +47,20 @@ test locally to ensure your code doesn't need tmhUtilities included.
 If you used custom HTTP request headers when they were defined as `'key: value'` strings
 you should now define them as `'key' => 'value'` pairs.
 
+Versions prior to 0.7.3 collapsed headers with the same value into one
+$tmhOAuth->response['headers'] key. Since 0.7.3 headers with the same key will use an array
+to store their values.
+
 ## Change History
+### 0.7.3 - 18 Februrary 2013
+- add support for making requests with the host header being different to the request host.
+- ensure headers with the same key do not overwrite each other in $tmhOAuth->response['headers'].
+- removed examples submodule in favor of examples including tmhOAuth, rather than tmhOAuth including examples
+- made it so that if param values are sent to $tmhOAuth->request as an array (key -> array()) then $tmhOAuth->prepare_params will now implode them using ','
+- fixed composer. (Issue #99). Props: rasa
+- fixed PHPDoc. (Issue #47). Props: trante
+- instead of void, $tmhOAuth->curlit now returns 0 if 'prevent_request' is set
+
 ### 0.7.2 - 01 November 2012
 - use DIRECTORY_SEPARATOR for multi-environment support. (Issue #80) Props: whallz
 - tidied up the curlHeader function to use explode instead of substr and store the keys in the format they are returned from the API
