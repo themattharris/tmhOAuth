@@ -52,6 +52,9 @@ $tmhOAuth->response['headers'] key. Since 0.7.3 headers with the same key will u
 to store their values.
 
 ## Change History
+### 0.7.4 - 19 Februrary 2013
+- corrections to composer.json to support packagists requirements. (Issue #110)
+
 ### 0.7.3 - 18 Februrary 2013
 - add support for making requests with the host header being different to the request host.
 - ensure headers with the same key do not overwrite each other in $tmhOAuth->response['headers'].
@@ -70,7 +73,7 @@ to store their values.
 - added support for specifying custom headers when using $tmhOAuth->request. (Issue #98)
 
 ### 0.7.1 - 27 October 2012
-- set content-length to 0 explictly to avoid a bug between libcurl and Twitter (Issue #94)
+- set content-length to 0 explictly to avoid a bug between libcurl and Twitter. (Issue #94)
 - allow initialization without a configuration array (default config to array())
 - prevent ->url allowing double slashes in paths
 
