@@ -52,6 +52,9 @@ $tmhOAuth->response['headers'] key. Since 0.7.3 headers with the same key will u
 to store their values.
 
 ## Change History
+### 0.7.5 - 20 Februrary 2013
+- tidying up of composer.json. (Issue #112) Props: ceeram
+
 ### 0.7.4 - 19 Februrary 2013
 - corrections to composer.json to support packagists requirements. (Issue #110)
 
