@@ -11,6 +11,9 @@
  *
  * 20 February 2013
  */
+
+namespace tmhOAuth;
+
 class tmhOAuth {
   const VERSION = '0.7.5';
 
