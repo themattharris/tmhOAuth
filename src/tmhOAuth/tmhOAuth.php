@@ -12,7 +12,7 @@
  * 20 February 2013
  */
 
-namespace themattharris;
+namespace tmhOAuth;
 
 class tmhOAuth {
   const VERSION = '0.7.5';

@@ -1,5 +1,5 @@
 {
-  "name": "themattharris/tmhoauth",
+  "name": "tmhoauth/tmhoauth",
   "description": "An OAuth 1.0A library written in PHP by @themattharris, specifically for use with the Twitter API",
   "license": "Apache-2.0",
   "authors": [
@@ -21,6 +21,6 @@
     "ext-curl": "*"
   },
   "autoload": {
-    "psr-0": { "tmhOAuth": "" }
+    "psr-0": { "tmhOAuth": "src/" }
   }
 }
