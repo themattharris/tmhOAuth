@@ -21,6 +21,8 @@ vast majority of hosting providers include these libraries and run with PHP 5.1+
 The code makes use of hash_hmac, which was introduced in PHP 5.1.2. If your version
 of PHP is lower than this you should ask your hosting provider for an update.
 
+To prevent warnings from being triggered, you should also make sure that the `date.timezone` directive in your `php.ini` is properly set. For more information, see the notes at http://php.net/date_default_timezone_set
+
 ## A note about security and SSL
 
 Version 0.60 hardened the security of the library and defaulted `curl_ssl_verifypeer` to `true`.

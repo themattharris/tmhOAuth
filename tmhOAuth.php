@@ -34,8 +34,6 @@ class tmhOAuth {
         // leave 'user_agent' blank for default, otherwise set this to
         // something that clearly identifies your app
         'user_agent'                 => '',
-        // default timezone for requests
-        'timezone'                   => 'UTC',
 
         'use_ssl'                    => true,
         'host'                       => 'api.twitter.com',
@@ -86,7 +84,6 @@ class tmhOAuth {
       $config
     );
     $this->set_user_agent();
-    date_default_timezone_set($this->config['timezone']);
   }
 
   /**
