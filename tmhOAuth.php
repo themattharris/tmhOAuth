@@ -303,7 +303,7 @@ class tmhOAuth {
     }
 
     // auth params = the default oauth params which are present in our collection of signing params
-    $this->auth_params = array_intersect_key($this->get_defaults(), $_signing_params);
+    $this->auth_params = array_intersect_key($_signing_params, $this->get_defaults());
     if (isset($_signing_params['oauth_callback'])) {
       $this->auth_params['oauth_callback'] = $_signing_params['oauth_callback'];
       unset($_signing_params['oauth_callback']);
