@@ -1,12 +1,22 @@
 <?php
 
-require_once "thmOAuth.php";
-
 /**
  * Twitter
  *
  * An interface to the Twitter OAuth API
  * found in the libraries directory
+ *
+ * Exmaple usage:
+ *
+ * <code>
+ * 		// First update the keys in the initialize function, then...
+ * 		require_once "thmOAuth.php"; // import the oauth library
+ * 		$tweets = Twitter::get(10); // fetches the 10 latest tweets
+ *
+ * 		// If you need to JSON encode the response to serve a Javascript AJAX request
+ * 		header('Content-Type: application/json');
+ * 		echo json_encode($tweets);
+ * </code>
  *
  * @author adamcbrewer
  * @version 1.0.0
