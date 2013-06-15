@@ -7,12 +7,12 @@
  * REST requests. OAuth authentication is sent using an Authorization Header.
  *
  * @author themattharris
- * @version 0.8.1
+ * @version 0.8.2
  *
  * 15 June 2013
  */
 class tmhOAuth {
-  const VERSION = '0.8.1';
+  const VERSION = '0.8.2';
 
   var $response = array();
 
@@ -215,7 +215,7 @@ class tmhOAuth {
 
   private function token() {
     if ( $this->request_settings['with_user'] ) {
-      if (isset($this->config['token'])) return $this->config['token'];
+      if (isset($this->config['token']) && !empty($this->config['token'])) return $this->config['token'];
       elseif (isset($this->config['user_token'])) return $this->config['user_token'];
     }
     return '';
@@ -223,7 +223,7 @@ class tmhOAuth {
 
   private function secret() {
     if ( $this->request_settings['with_user'] ) {
-      if (isset($this->config['secret'])) return $this->config['secret'];
+      if (isset($this->config['secret']) && !empty($this->config['secret'])) return $this->config['secret'];
       elseif (isset($this->config['user_secret'])) return $this->config['user_secret'];
     }
     return '';
