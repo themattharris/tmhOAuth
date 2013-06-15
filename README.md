@@ -1,7 +1,6 @@
 # tmhOAuth
 
-An OAuth 1.0A library written in PHP by @themattharris, specifically for use
-with the Twitter API.
+An OAuth library written in PHP by @themattharris.
 
 **Disclaimer**: This project is a work in progress. Please use the issue tracker
 to report any enhancements or issues you encounter.

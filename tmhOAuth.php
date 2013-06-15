@@ -4,15 +4,15 @@
  *
  * An OAuth library written in PHP.
  * The library supports file uploading using multipart/form as well as general
- * REST requests. OAuth authentication is sent using the an Authorization Header.
+ * REST requests. OAuth authentication is sent using an Authorization Header.
  *
  * @author themattharris
- * @version 0.8.0
+ * @version 0.8.1
  *
- * 13 June 2013
+ * 15 June 2013
  */
 class tmhOAuth {
-  const VERSION = '0.8.0';
+  const VERSION = '0.8.1';
 
   var $response = array();
 
@@ -58,13 +58,14 @@ class tmhOAuth {
         'curl_ssl_verifyhost'        => 2,
         // for security this should always be set to true.
         'curl_ssl_verifypeer'        => true,
+        // for security this should always be set to true.
+        'use_ssl'                    => true,
 
         // you can get the latest cacert.pem from here http://curl.haxx.se/ca/cacert.pem
         // if you're getting HTTP 0 responses, check cacert.pem exists and is readable
         // without it curl won't be able to create an SSL connection
         'curl_cainfo'                => __DIR__ . DIRECTORY_SEPARATOR . 'cacert.pem',
         'curl_capath'                => __DIR__,
-        'use_ssl'                    => true, // you really don't want to turn this off
 
         'curl_followlocation'        => false, // whether to follow redirects or not
 
@@ -111,7 +112,7 @@ class tmhOAuth {
     if (!empty($this->config['user_agent']))
       return;
 
-    $ssl = ($this->config['curl_ssl_verifyhost'] && $this->config['curl_ssl_verifypeer']) ? '+' : '-';
+    $ssl = ($this->config['curl_ssl_verifyhost'] && $this->config['curl_ssl_verifypeer'] && $this->config['use_ssl']) ? '+' : '-';
     $ua = 'tmhOAuth ' . self::VERSION . $ssl . 'SSL - //github.com/themattharris/tmhOAuth';
     $this->config['user_agent'] = $ua;
   }
@@ -214,16 +215,16 @@ class tmhOAuth {
 
   private function token() {
     if ( $this->request_settings['with_user'] ) {
-      if (isset($this->config['user_token'])) return $this->config['user_token'];
-      elseif (isset($this->config['token'])) return $this->config['token'];
+      if (isset($this->config['token'])) return $this->config['token'];
+      elseif (isset($this->config['user_token'])) return $this->config['user_token'];
     }
     return '';
   }
 
   private function secret() {
     if ( $this->request_settings['with_user'] ) {
-      if (isset($this->config['user_secret'])) return $this->config['user_secret'];
-      elseif (isset($this->config['secret'])) return $this->config['secret'];
+      if (isset($this->config['secret'])) return $this->config['secret'];
+      elseif (isset($this->config['user_secret'])) return $this->config['user_secret'];
     }
     return '';
   }
