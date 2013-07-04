@@ -48,21 +48,38 @@ class Twitter {
 	 */
 	public static function initialize () {
 
-		static::$api = new tmhOAuth(array(
+		/*static::$api = new tmhOAuth(array(
 			'consumer_key'    		=> '',
 			'consumer_secret' 		=> '',
 			'user_token'      		=> '',
 			'user_secret'     		=> '',
 			'curl_ssl_verifypeer'   => FALSE
+		));*/
+	/*
+	 * RZ API implementation -- You can use hard coded values
+	 */
+		static::$api = new tmhOAuth(array(
+			'consumer_key'    		=> rz_setting::get('twitter_consumer_key'),
+			'consumer_secret' 		=> rz_setting::get('twitter_consumer_secret'),
+			'user_token'      		=> rz_setting::get('twitter_access_token'),
+			'user_secret'     		=> rz_setting::get('twitter_access_token_secret'),
+			'curl_ssl_verifypeer'   => FALSE
 		));
 
-		static::$screen_name = '';
+		static::$screen_name = rz_setting::get('twitter_account');
 
 		return static::$api;
 
 	}
 
+	public static function &api()
+	{
+		if (static::$api === null) {
 
+			static::initialize();
+		}
+		return static::$api;
+	}
 	/**
 	 * Get a number of specified tweets back from the user's timeline,
 	 * optionally JSON formatted
@@ -84,7 +101,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response, false);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -110,7 +127,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response, false);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -135,7 +152,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			$response = json_decode($response);
+			$response = json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 			if ($list === TRUE) {
 				return static::users($response->ids);
 			} else {
@@ -171,7 +188,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -197,7 +214,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -224,7 +241,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -257,7 +274,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			$mentions = json_decode($response);
+			$mentions = json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 
 			// We have all replies since the tweet ID we've specified, but
 			// here is where twe pick out only the ones that are specifically
@@ -297,7 +314,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -328,7 +345,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
@@ -363,7 +380,7 @@ class Twitter {
 		$code = static::api()->response['code'];
 
 		if ($code === 200) {
-			return json_decode($response);
+			return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
 		}
 
 		return false;
