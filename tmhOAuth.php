@@ -765,7 +765,7 @@ class tmhOAuth {
         break;
       case 'POST':
         curl_setopt($c, CURLOPT_POST, true);
-				// intentional fall-through
+        // intentional fall-through
       case 'PUT':
         if (isset($this->request_settings['postfields']))
           $postfields = $this->request_settings['postfields'];
