@@ -38,6 +38,7 @@ class tmhOAuth {
         // something that clearly identifies your app
         'user_agent'                 => '',
         'host'                       => 'api.twitter.com',
+        'method'                     => 'GET',
 
         'consumer_key'               => '',
         'consumer_secret'            => '',
