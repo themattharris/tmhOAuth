@@ -38,6 +38,7 @@ class tmhOAuth {
         // something that clearly identifies your app
         'user_agent'                 => '',
         'host'                       => 'api.twitter.com',
+        'method'                     => 'GET',
 
         'consumer_key'               => '',
         'consumer_secret'            => '',
@@ -379,6 +380,7 @@ class tmhOAuth {
 
       switch ($this->request_settings['method']) {
         case 'POST':
+        case 'PUT':
           $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
           break;
         default:
@@ -763,6 +765,8 @@ class tmhOAuth {
         break;
       case 'POST':
         curl_setopt($c, CURLOPT_POST, true);
+        // intentional fall-through
+      case 'PUT':
         if (isset($this->request_settings['postfields']))
           $postfields = $this->request_settings['postfields'];
         else
@@ -774,6 +778,8 @@ class tmhOAuth {
         if (isset($this->request_settings['postfields']))
           curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['postfields']);
     }
+
+    curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['method']);
 
     curl_setopt_array($c, array(
       CURLOPT_HTTP_VERSION   => $this->config['curl_http_version'],
