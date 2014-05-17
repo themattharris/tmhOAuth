@@ -374,13 +374,14 @@ class tmhOAuth {
       $this->request_settings['basestring_params'] = implode('&', $prepared_pairs_with_oauth);
     }
 
-    // setup params for GET/POST method handling
+    // setup params for GET/POST/PUT method handling
     if (!empty($prepared_pairs)) {
       $content = implode('&', $prepared_pairs);
 
       switch ($this->request_settings['method']) {
-        case 'POST':
         case 'PUT':
+          // fall through to POST as PUT should be treated the same
+        case 'POST':
           $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
           break;
         default:
@@ -758,25 +759,15 @@ class tmhOAuth {
 
     // configure curl
     $c = curl_init();
-    switch ($this->request_settings['method']) {
-      case 'GET':
-        if (isset($this->request_settings['querystring']))
-          $this->request_settings['url'] = $this->request_settings['url'] . '?' . $this->request_settings['querystring'];
-        break;
-      case 'POST':
-        curl_setopt($c, CURLOPT_POST, true);
-        // intentional fall-through
-      case 'PUT':
-        if (isset($this->request_settings['postfields']))
-          $postfields = $this->request_settings['postfields'];
-        else
-          $postfields = array();
 
-        curl_setopt($c, CURLOPT_POSTFIELDS, $postfields);
-        break;
-      default:
-        if (isset($this->request_settings['postfields']))
-          curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['postfields']);
+    if ($this->request_settings['method'] == 'GET' && isset($this->request_settings['querystring'])) {
+      $this->request_settings['url'] = $this->request_settings['url'] . '?' . $this->request_settings['querystring'];
+    } elseif ($this->request_settings['method'] == 'POST' || $this->request_settings['method'] == 'PUT') {
+      $postfields = array();
+      if (isset($this->request_settings['postfields']))
+        $postfields = $this->request_settings['postfields'];
+
+      curl_setopt($c, CURLOPT_POSTFIELDS, $postfields);
     }
 
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['method']);
