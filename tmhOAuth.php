@@ -70,6 +70,11 @@ class tmhOAuth {
         'curl_cainfo'                => __DIR__ . DIRECTORY_SEPARATOR . 'cacert.pem',
         'curl_capath'                => __DIR__,
 
+        // in some cases (very very odd ones) the SSL version must be set manually.
+        // unless you know why your are changing this, you should leave it as false
+        // to allow PHP to determine the value for this setting itself.
+        'curl_sslversion'            => false,
+
         'curl_followlocation'        => false, // whether to follow redirects or not
 
         // support for proxy servers
@@ -799,6 +804,9 @@ class tmhOAuth {
 
     if ($this->config['curl_proxyuserpwd'] !== false)
       curl_setopt($c, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd']);
+
+    if ($this->config['curl_sslversion'] !== false)
+      curl_setopt($c, CURLOPT_SSLVERSION, $this->config['curl_sslversion']);
 
     if ($this->config['is_streaming']) {
       // process the body
