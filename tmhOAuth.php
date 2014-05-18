@@ -303,6 +303,8 @@ class tmhOAuth {
    * @return string the original or modified string, depending on the request and the input parameter
    */
   private function multipart_escape($value) {
+    if (class_exists('CurlFile', false) && is_object($value) && $value instanceof CurlFile)
+      return $value;
     if (! $this->request_settings['multipart'] || strpos($value, '@') !== 0)
       return $value;
 
@@ -372,7 +374,9 @@ class tmhOAuth {
         }
       }
       $prepared[$k] = $v;
-      $prepared_pairs[] = "{$k}={$v}";
+
+      if (!is_object($v) || !class_exists('CurlFile', false) || !($v instanceof CurlFile))
+        $prepared_pairs[] = "{$k}={$v}";
     }
 
     if ($doing_oauth1) {
