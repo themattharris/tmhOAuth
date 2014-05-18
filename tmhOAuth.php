@@ -303,9 +303,7 @@ class tmhOAuth {
    * @return string the original or modified string, depending on the request and the input parameter
    */
   private function multipart_escape($value) {
-    if (class_exists('CurlFile', false) && is_object($value) && $value instanceof CurlFile)
-      return $value;
-    if (! $this->request_settings['multipart'] || strpos($value, '@') !== 0)
+    if (!$this->request_settings['multipart'] || strpos($value, '@') !== 0)
       return $value;
 
     // see if the parameter is a file.
@@ -353,6 +351,9 @@ class tmhOAuth {
     // Ref: Spec: 9.1.1 (1)
     uksort($params, 'strcmp');
 
+    // set this now so we're not doing it on every parameter
+    $supports_curl_file = class_exists('CurlFile', false);
+
     // encode params unless we're doing multipart
     foreach ($params as $k => $v) {
       $k = $this->request_settings['multipart'] ? $k : $this->safe_encode($k);
@@ -360,7 +361,14 @@ class tmhOAuth {
       if (is_array($v))
         $v = implode(',', $v);
 
-      $v = $this->request_settings['multipart'] ? $this->multipart_escape($v) : $this->safe_encode($v);
+      // we don't need to do the multipart escaping if we support curlfile
+      if ($supports_curl_file && ($v instanceof CurlFile)) {
+        // leave $v alone
+      } elseif ($this->request_settings['multipart']) {
+        $v = $this->multipart_escape($v);
+      } else {
+        $v = $this->safe_encode($v);
+      }
 
       // split parameters for the basestring and authorization header, and recreate the oauth1 array
       if ($doing_oauth1) {
@@ -375,7 +383,7 @@ class tmhOAuth {
       }
       $prepared[$k] = $v;
 
-      if (!is_object($v) || !class_exists('CurlFile', false) || !($v instanceof CurlFile))
+      if (!$this->request_settings['multipart'])
         $prepared_pairs[] = "{$k}={$v}";
     }
 
@@ -384,7 +392,7 @@ class tmhOAuth {
     }
 
     // setup params for GET/POST/PUT method handling
-    if (!empty($prepared_pairs)) {
+    if (!empty($prepared)) {
       $content = implode('&', $prepared_pairs);
 
       switch ($this->request_settings['method']) {
