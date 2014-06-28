@@ -298,7 +298,8 @@ class tmhOAuth {
    * @return string the original or modified string, depending on the request and the input parameter
    */
   private function multipart_escape($value) {
-    if (! $this->request_settings['multipart'] || strpos($value, '@') !== 0)
+    // PHP > 5.5.0 has deprecated the @fileName syntax for file uploads
+    if (!$this->request_settings['multipart'] || is_a($value, '\CurlFile') || strpos($value, '@') !== 0)
       return $value;
 
     // see if the parameter is a file.
@@ -366,27 +367,31 @@ class tmhOAuth {
           continue;
         }
       }
-      $prepared[$k] = $v;
-      $prepared_pairs[] = "{$k}={$v}";
+
+      if ($this->request_settings['multipart'])
+        $prepared[$k] = $v;
+      else
+        $prepared_pairs[] = "{$k}={$v}";
     }
 
     if ($doing_oauth1) {
       $this->request_settings['basestring_params'] = implode('&', $prepared_pairs_with_oauth);
     }
 
-    // setup params for GET/POST method handling
-    if (!empty($prepared_pairs)) {
+    if ($this->request_settings['multipart'])
+      $content = $prepared;
+    else
       $content = implode('&', $prepared_pairs);
 
-      switch ($this->request_settings['method']) {
-        case 'POST':
-        case 'PUT':
-          $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
-          break;
-        default:
-          $this->request_settings['querystring'] = $content;
-          break;
-      }
+    // setup params for GET/POST method handling
+    switch ($this->request_settings['method']) {
+      case 'POST':
+      case 'PUT':
+        $this->request_settings['postfields'] = $content;
+        break;
+      default:
+        $this->request_settings['querystring'] = $content;
+        break;
     }
   }
 
