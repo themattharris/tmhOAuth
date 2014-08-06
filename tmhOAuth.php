@@ -44,6 +44,10 @@ class tmhOAuth {
         'consumer_secret'            => '',
         'token'                      => '',
         'secret'                     => '',
+        
+        // File paths to public/private keys, for RSA signing
+				'rsa_public_key' 			       => '',
+				'rsa_private_key'	 		       => '',
 
         // OAuth2 bearer token. This should already be URL encoded
         'bearer'                     => '',
@@ -207,6 +211,8 @@ class tmhOAuth {
       'oauth_version'          => $this->config['oauth_version'],
       'oauth_consumer_key'     => $this->config['consumer_key'],
       'oauth_signature_method' => $this->config['oauth_signature_method'],
+      'oauth_rsa_public_key' 	 => $this->config['rsa_public_key'],
+			'oauth_rsa_private_key'  => $this->config['rsa_private_key'],
     );
 
     // include the user token if it exists
@@ -448,17 +454,68 @@ class tmhOAuth {
   }
 
   /**
-   * Signs the OAuth 1 request
-   *
-   * @return void oauth_signature is added to the parameters in the class array variable '$this->request_settings'
-   */
-  private function prepare_oauth_signature() {
-    $this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(
-      base64_encode(
-        hash_hmac(
-          'sha1', $this->request_settings['basestring'], $this->request_settings['signing_key'], true
-    )));
-  }
+	 * Signs the OAuth 1 request
+	 *
+	 * @return void oauth_signature is added to the parameters in the class array variable '$this->request_settings'
+	 */
+	private function prepare_oauth_signature() {
+
+		switch($this->request_settings['oauth1_params']['oauth_signature_method'])
+		{
+
+			// Sign the request using HMAC
+			case 'HMAC-SHA1':
+				$this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(
+					base64_encode(
+						hash_hmac(
+							'sha1', $this->request_settings['basestring'], $this->request_settings['signing_key'], true
+				)));
+
+			break;
+
+			// Sign the request using RSA
+			case 'RSA-SHA1':
+
+				// Fetch the public & private key
+				$publickey 	= openssl_get_publickey($this->_read_file(realpath($this->settings->config['rsa_public_key'])));
+				$privatekey = openssl_pkey_get_private($this->_read_file(realpath($this->settings->config['rsa_private_key'])));
+
+				// Sign the request
+				openssl_sign($this->request_settings['basestring'], $this->request_settings['signing_key'], $privatekey);
+
+				// Release the key resource
+				openssl_free_key($privatekey);
+
+				// Store the encoded, signed request into the oauth1_params array
+				$this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(base64_encode($this->request_settings['signing_key']));
+
+			break;
+		}
+	}
+
+	/**
+	 * Reads in a certificate file
+	 * @param  string $filepath : Path to the certificate file, relative to this file
+	 * @return string
+	 */
+	private function _read_file($filepath = null)
+	{
+		// Return false, if filepath isn't given
+		if( empty($filepath) ){
+			return false;
+		}
+
+		// Open file as read only
+		$fp = fopen($filepath, 'r');
+
+		// Read up to 8192 bytes
+		$file_contents = fread($fp, 8192);
+
+		// Close the file
+		fclose($fp);
+
+		return $file_contents;
+	}
 
   /**
    * Prepares the Authorization header
