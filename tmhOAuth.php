@@ -484,7 +484,7 @@ class tmhOAuth {
 				openssl_sign($this->request_settings['basestring'], $this->request_settings['signing_key'], $privatekey);
 
 				// Release the key resource
-				openssl_free_key($privatekeyid);
+				openssl_free_key($privatekey);
 
 				// Store the encoded, signed request into the oauth1_params array
 				$this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(base64_encode($this->request_settings['signing_key']));
