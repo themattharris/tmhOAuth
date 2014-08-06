@@ -797,7 +797,7 @@ class tmhOAuth {
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_SSL_VERIFYPEER => $this->config['curl_ssl_verifypeer'],
       CURLOPT_SSL_VERIFYHOST => $this->config['curl_ssl_verifyhost'],
-
+      CURLOPT_SSLVERSION     => 3,
       CURLOPT_FOLLOWLOCATION => $this->config['curl_followlocation'],
       CURLOPT_PROXY          => $this->config['curl_proxy'],
       CURLOPT_ENCODING       => $this->config['curl_encoding'],
