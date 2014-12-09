@@ -6,22 +6,8 @@
  * An interface to the Twitter OAuth API
  * found in the libraries directory
  *
- * Exmaple usage:
- *
- * <code>
- * 		// First update the keys in the initialize function, then...
- * 		require_once "thmOAuth.php"; // import the oauth library
- * 		$tweets = Twitter::get(10); // fetches the 10 latest tweets
- *
- * 		// If you need to JSON encode the response to serve a Javascript AJAX request
- * 		header('Content-Type: application/json');
- * 		echo json_encode($tweets);
- * </code>
- *
  * @author adamcbrewer
- * @version 1.0.0
- *
- * 05 June 2013
+ * @version 1.0.1
  *
  */
 class Twitter {
@@ -41,60 +27,65 @@ class Twitter {
 	private static $screen_name;
 
 
+    /**
+     * Constructor
+     *
+     * @return object $config
+     */
+    public function __construct ($config) {
+
+        static::$api = new tmhOAuth(array(
+            'consumer_key'          => $config['consumer_key'],
+            'consumer_secret'       => $config['consumer_secret'],
+            'user_token'            => $config['user_token'],
+            'user_secret'           => $config['user_secret'],
+            'curl_ssl_verifypeer'   => FALSE
+        ));
+
+        static::$screen_name = $config['screen_name'];
+
+        return static::$api;
+
+    }
+
+
 	/**
-	 * Pupulate and set-up our class vars
-	 *
-	 * @return object $api
-	 */
-	public static function initialize () {
+     * Populate and set-up our class vars
+     *
+     * @return object $api
+     */
+    public static function initialize ($config) {
 
-		/*static::$api = new tmhOAuth(array(
-			'consumer_key'    		=> '',
-			'consumer_secret' 		=> '',
-			'user_token'      		=> '',
-			'user_secret'     		=> '',
-			'curl_ssl_verifypeer'   => FALSE
-		));*/
-	/*
-	 * RZ API implementation -- You can use hard coded values
-	 */
-		static::$api = new tmhOAuth(array(
-			'consumer_key'    		=> rz_setting::get('twitter_consumer_key'),
-			'consumer_secret' 		=> rz_setting::get('twitter_consumer_secret'),
-			'user_token'      		=> rz_setting::get('twitter_access_token'),
-			'user_secret'     		=> rz_setting::get('twitter_access_token_secret'),
-			'curl_ssl_verifypeer'   => FALSE
-		));
+        return static::$api;
 
-		static::$screen_name = rz_setting::get('twitter_account');
+    }
 
-		return static::$api;
+    public static function &api()
+    {
+        if (static::$api === null) {
 
-	}
+            static::initialize();
+        }
+        return static::$api;
+    }
 
-	public static function &api()
-	{
-		if (static::$api === null) {
 
-			static::initialize();
-		}
-		return static::$api;
-	}
+
 	/**
 	 * Get a number of specified tweets back from the user's timeline,
 	 * optionally JSON formatted
 	 *
-	 * @param  integer $tweet_count 	The number of tweets to get
+	 * @param  integer $count 	The number of tweets to get
 	 * @param  boolean $json_encode 	JSON encoded or not
 	 * @return object $response
 	 */
-	public static function get ($tweet_count = 10, $count_replies = false ) {
+	public static function get ($count = 10, $count_replies = false ) {
 
 		static::api()->request('GET', static::api()->url('1.1/statuses/user_timeline'), array(
 			'include_entities' => 1,
 			'include_rts'      => 1,
 			'screen_name'      => static::$screen_name,
-			'count'            => $tweet_count,
+			'count'            => $count,
 		));
 
 		$response = static::api()->response['response'];
@@ -107,6 +98,33 @@ class Twitter {
 		return false;
 
 	}
+
+
+    /**
+     * Search for tweets via a query param
+     *
+     * @param  integer $count     The number of tweets to get
+     * @param  string $query      The query param. See: https://dev.twitter.com/rest/public/search
+     * @return object $response
+     */
+    public static function search ($count = 100, $query = '') {
+
+        static::api()->request('GET', static::api()->url('1.1/search/tweets'), array(
+            'lang'              => 'en',
+            'q'                 => $query,
+            'count'             => $count
+        ));
+
+        $response = static::api()->response['response'];
+        $code = static::api()->response['code'];
+
+        if ($code === 200) {
+            return json_decode($response, false, 512, JSON_BIGINT_AS_STRING);
+        }
+
+        return false;
+
+    }
 
 
 	/**
