@@ -81,6 +81,7 @@ class tmhOAuth {
         'curl_proxy'                 => false, // really you don't want to use this if you are using streaming
         'curl_proxyuserpwd'          => false, // format username:password for proxy, if required
         'curl_encoding'              => '',    // leave blank for all supported formats, else use gzip, deflate, identity etc
+        'curl_interface'             => false, // indicates IP or inteface name; false to use default
 
         // streaming API configuration
         'is_streaming'               => false,
@@ -788,6 +789,11 @@ class tmhOAuth {
     }
 
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['method']);
+
+    if ($this->config['curl_interface'] !== false) {
+        curl_setopt($c, CURLOPT_INTERFACE, $this->config['curl_interface']);
+    }
+    unset($this->config['curl_interface']);
 
     curl_setopt_array($c, array(
       CURLOPT_HTTP_VERSION   => $this->config['curl_http_version'],
