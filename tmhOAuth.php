@@ -16,6 +16,9 @@ defined('__DIR__') or define('__DIR__', dirname(__FILE__));
 class tmhOAuth {
   const VERSION = '0.8.4';
   var $response = array();
+  var $request_settings = array();
+  var $config = array();
+  var $metrics = array();
 
   /**
    * Creates a new tmhOAuth object
@@ -137,9 +140,8 @@ class tmhOAuth {
     if ($this->config['force_nonce'] === false) {
       $prefix = $include_time ? microtime() : '';
       return md5(substr($prefix . uniqid(), 0, $length));
-    } else {
-      return $this->config['force_nonce'];
     }
+    return $this->config['force_nonce'];
   }
 
   /**
@@ -167,15 +169,15 @@ class tmhOAuth {
   private function safe_encode($data) {
     if (is_array($data)) {
       return array_map(array($this, 'safe_encode'), $data);
-    } else if (is_scalar($data)) {
+    }
+    if (is_scalar($data)) {
       return str_ireplace(
         array('+', '%7E'),
         array(' ', '~'),
         rawurlencode($data)
       );
-    } else {
-      return '';
     }
+    return '';
   }
 
   /**
@@ -188,11 +190,11 @@ class tmhOAuth {
   private function safe_decode($data) {
     if (is_array($data)) {
       return array_map(array($this, 'safe_decode'), $data);
-    } else if (is_scalar($data)) {
-      return rawurldecode($data);
-    } else {
-      return '';
     }
+    if (is_scalar($data)) {
+      return rawurldecode($data);
+    }
+    return '';
   }
 
   /**
@@ -222,18 +224,17 @@ class tmhOAuth {
   }
 
   private function token() {
-    if ( $this->request_settings['with_user'] ) {
-      if (isset($this->config['token']) && !empty($this->config['token'])) return $this->config['token'];
-      elseif (isset($this->config['user_token'])) return $this->config['user_token'];
-    }
-    return '';
+    return $this->value_from_config('token');
   }
 
   private function secret() {
-    if ( $this->request_settings['with_user'] ) {
-      if (isset($this->config['secret']) && !empty($this->config['secret'])) return $this->config['secret'];
-      elseif (isset($this->config['user_secret'])) return $this->config['user_secret'];
-    }
+    return $this->value_from_config('secret');
+  }
+
+  private function value_from_config($name) {
+    if (!$this->request_settings['with_user']) return '';
+    if (isset($this->config[$name]) && !empty($this->config[$name])) return $this->config[$name];
+    if (isset($this->config['user_'.$name])) return $this->config['user_'.$name];
     return '';
   }
 
@@ -299,7 +300,7 @@ class tmhOAuth {
    * the beginning of the tweet. we don't use \0 here because it's the character for string
    * termination.
    *
-   * @param the parameter value
+   * @param string $value the parameter value
    * @return string the original or modified string, depending on the request and the input parameter
    */
   private function multipart_escape($value) {
@@ -522,11 +523,8 @@ class tmhOAuth {
     );
     $options = array_merge($this->default_options(), $options);
 
-    if ($useauth) {
-      return $this->user_request($options);
-    } else {
-      return $this->unauthenticated_request($options);
-    }
+    if ($useauth) return $this->user_request($options);
+    return $this->unauthenticated_request($options);
   }
 
   public function apponly_request($options=array()) {
@@ -534,15 +532,12 @@ class tmhOAuth {
       'with_user' => false,
     ));
     $this->reset_request_settings($options);
-    if ($options['without_bearer']) {
-      return $this->oauth1_request();
-    } else {
-      $this->prepare_method();
-      $this->prepare_url();
-      $this->prepare_params();
-      $this->prepare_auth_header();
-      return $this->curlit();
-    }
+    if ($options['without_bearer']) return $this->oauth1_request();
+    $this->prepare_method();
+    $this->prepare_url();
+    $this->prepare_params();
+    $this->prepare_auth_header();
+    return $this->curlit();
   }
 
   public function user_request($options=array()) {
@@ -572,7 +567,7 @@ class tmhOAuth {
    * @param string $url the request URL without query string parameters
    * @param array $params the request parameters as an array of key=value pairs
    * @param boolean $with_user whether to include the user credentials when making the request.
-   * @return void
+   * @return int the http response code for the request. 0 is returned if a connection could not be made
    */
   private function oauth1_request() {
     $this->prepare_oauth1_params();
@@ -612,9 +607,7 @@ class tmhOAuth {
    */
   public function streaming_request($method, $url, $params=array(), $callback='') {
     if ( ! empty($callback) ) {
-      if ( ! is_callable($callback) ) {
-        return false;
-      }
+      if ( ! is_callable($callback) ) return false;
       $this->config['streaming_callback'] = $callback;
     }
     $this->metrics['start']          = time();
@@ -755,9 +748,7 @@ class tmhOAuth {
       $metrics
     );
     $this->buffer = $buffered[1];
-    if ($stop)
-      return 0;
-
+    if ($stop) return 0;
     return $l;
   }
 
@@ -808,17 +799,17 @@ class tmhOAuth {
       CURLINFO_HEADER_OUT    => true,
     ));
 
-    if ($this->config['curl_cainfo'] !== false)
-      curl_setopt($c, CURLOPT_CAINFO, $this->config['curl_cainfo']);
+    $config_options = array(
+        'curl_cainfo'       => CURLOPT_CAINFO,
+        'curl_capath'       => CURLOPT_CAPATH,
+        'curl_proxyuserpwd' => CURLOPT_PROXYUSERPWD,
+        'curl_sslversion'   => CURLOPT_SSLVERSION,
+    );
 
-    if ($this->config['curl_capath'] !== false)
-      curl_setopt($c, CURLOPT_CAPATH, $this->config['curl_capath']);
-
-    if ($this->config['curl_proxyuserpwd'] !== false)
-      curl_setopt($c, CURLOPT_PROXYUSERPWD, $this->config['curl_proxyuserpwd']);
-
-    if ($this->config['curl_sslversion'] !== false)
-      curl_setopt($c, CURLOPT_SSLVERSION, $this->config['curl_sslversion']);
+    foreach($config_options as $key=>$config_option) {
+        if ($this->config[$key] !== false)
+            curl_setopt($c, $config_option, $this->config[$key]);
+    }
 
     if ($this->config['is_streaming']) {
       // process the body
@@ -827,6 +818,7 @@ class tmhOAuth {
       curl_setopt($c, CURLOPT_WRITEFUNCTION, array($this, 'curlWrite'));
     }
 
+    $headers = array();
     if ( ! empty($this->request_settings['headers'])) {
       foreach ($this->request_settings['headers'] as $k => $v) {
         $headers[] = trim($k . ': ' . $v);
