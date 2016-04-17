@@ -7,14 +7,14 @@
  * REST requests. OAuth authentication is sent using an Authorization Header.
  *
  * @author themattharris
- * @version 0.8.4-dev
+ * @version 0.8.4
  *
- * 18 May 2014
+ * 06 Aug 2014
  */
 defined('__DIR__') or define('__DIR__', dirname(__FILE__));
 
 class tmhOAuth {
-  const VERSION = '0.8.4-dev';
+  const VERSION = '0.8.4';
   var $response = array();
 
   /**
