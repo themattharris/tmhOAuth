@@ -110,11 +110,17 @@ class tmhOAuth {
   }
 
   /**
+   * Allow the oauth tokens to be set after instantiation
+   */
+  public function set_oauth_tokens($user_token, $user_secret) {
+    $this->config['user_token'] = $user_token;
+    $this->config['user_secret'] = $user_secret;
+  }
+
+  /**
    * Sets the useragent for PHP to use
    * If '$this->config['user_agent']' already has a value it is used instead of one
    * being generated.
-   *
-   * @return void value is stored to the config array class variable
    */
   private function set_user_agent() {
     if (!empty($this->config['user_agent']))
