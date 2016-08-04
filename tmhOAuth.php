@@ -804,7 +804,10 @@ class tmhOAuth {
       CURLOPT_URL            => $this->request_settings['url'],
       // process the headers
       CURLOPT_HEADERFUNCTION => array($this, 'curlHeader'),
-      CURLOPT_HEADER         => false,
+      CURLOPT_HEADER         => true, //was false for version <= 0.7.0 (04 Sept 2012), 
+                                      //changed to true, to support rate limit returning
+                                      //for more details refer to 1.1 API
+                                      //<https://dev.twitter.com/docs/rate-limiting/1.1>
       CURLINFO_HEADER_OUT    => true,
     ));
 
@@ -843,11 +846,14 @@ class tmhOAuth {
     $info = curl_getinfo($c);
     $error = curl_error($c);
     $errno = curl_errno($c);
+    // header_size, for seperation of header/body from raw response
+    $header_size = curl_getinfo($c, CURLINFO_HEADER_SIZE);
     curl_close($c);
 
     // store the response
     $this->response['code'] = $code;
-    $this->response['response'] = $response;
+    $this->response['response'] = substr($response, $header_size);
+    $this->response['header'] = substr($response, 0, $header_size);
     $this->response['info'] = $info;
     $this->response['error'] = $error;
     $this->response['errno'] = $errno;
