@@ -45,6 +45,9 @@ class tmhOAuth {
         'token'                      => '',
         'secret'                     => '',
 
+        // RSA private key (for RSA-SHA1 and RSA-SHA256 methods)
+        'private_key_pem'            => '',
+
         // OAuth2 bearer token. This should already be URL encoded
         'bearer'                     => '',
 
@@ -453,11 +456,48 @@ class tmhOAuth {
    * @return void oauth_signature is added to the parameters in the class array variable '$this->request_settings'
    */
   private function prepare_oauth_signature() {
-    $this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(
-      base64_encode(
-        hash_hmac(
-          'sha1', $this->request_settings['basestring'], $this->request_settings['signing_key'], true
-    )));
+    switch ($this->config['oauth_signature_method']) {
+      case 'HMAC-SHA1':
+        $signature = $this->sign_with_hmac('sha1');
+        break;
+      case 'HMAC-SHA256':
+        $signature = $this->sign_with_hmac('sha256');
+        break;
+      case 'RSA-SHA1':
+        $signature = $this->sign_with_rsa('sha1');
+        break;
+      case 'RSA-SHA256':
+        $signature = $this->sign_with_rsa('sha256');
+        break;
+      default:
+        throw new Exception("Unsupported oauth_signature_method: '" . $this->config['oauth_signature_method'] . "'");
+    }
+    $this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(base64_encode($signature));
+  }
+
+  /**
+   * Signs the OAuth 1 request with HMAC-based signature
+   *
+   * @param string $algorithm algorithm name (like sha1 or sha256)
+   * @return binary signature
+   */
+  private function sign_with_hmac($algorithm) {
+    return hash_hmac(
+      $algorithm, $this->request_settings['basestring'], $this->request_settings['signing_key'], true
+    );
+  }
+
+  /**
+   * Signs the OAuth 1 request with RSA-based signature
+   *
+   * @param string $algorithm name of hash algorithm that will be
+   * used to compute base string hash before encrypting it with RSA
+   * (like sha1 or sha256)
+   * @return binary signature
+   */
+  private function sign_with_rsa($algorithm) {
+    openssl_sign($this->request_settings['basestring'], $signature, $this->config['private_key_pem'], $algorithm);
+    return $signature;
   }
 
   /**
