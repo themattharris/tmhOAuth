@@ -496,7 +496,13 @@ class tmhOAuth {
    * @return binary signature
    */
   private function sign_with_rsa($algorithm) {
-    openssl_sign($this->request_settings['basestring'], $signature, $this->config['private_key_pem'], $algorithm);
+    if ($this->config['private_key_pem'] == '') {
+      throw new Exception("No private key PEM is configured, cannot sign");
+    }
+    $ok = openssl_sign($this->request_settings['basestring'], $signature, $this->config['private_key_pem'], $algorithm);
+    if (!$ok) {
+      throw new Exception("Cannot sign: " . openssl_error_string()); 
+    }
     return $signature;
   }
 
