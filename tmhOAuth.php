@@ -46,6 +46,8 @@ class tmhOAuth {
         'secret'                     => '',
 
         // RSA private key (for RSA-SHA1 and RSA-SHA256 methods)
+        // Please note that this is expected to be a string representing
+        // the PEM-formatted key itself and NOT the file name
         'private_key_pem'            => '',
 
         // OAuth2 bearer token. This should already be URL encoded
