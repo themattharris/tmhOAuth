@@ -499,6 +499,9 @@ class tmhOAuth {
    * @return binary signature
    */
   private function sign_with_rsa($algorithm) {
+    if (!function_exists('openssl_sign')) {
+      throw new Exception("openssl_sign function does not exist. Please make sure Openssl extension is installed");
+    }
     if ($this->config['private_key_pem'] == '') {
       throw new Exception("No private key PEM is configured, cannot sign");
     }
