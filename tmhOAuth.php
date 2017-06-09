@@ -7,14 +7,14 @@
  * REST requests. OAuth authentication is sent using an Authorization Header.
  *
  * @author themattharris
- * @version 0.8.4
+ * @version 0.8.5
  *
- * 06 Aug 2014
+ * 09 Jun 2017
  */
 defined('__DIR__') or define('__DIR__', dirname(__FILE__));
 
 class tmhOAuth {
-  const VERSION = '0.8.4';
+  const VERSION = '0.8.5';
   var $response = array();
 
   /**
@@ -44,6 +44,11 @@ class tmhOAuth {
         'consumer_secret'            => '',
         'token'                      => '',
         'secret'                     => '',
+
+        // RSA private key (for RSA-SHA1 and RSA-SHA256 methods)
+        // Please note that this is expected to be a string representing
+        // the PEM-formatted key itself and NOT the file name
+        'private_key_pem'            => '',
 
         // OAuth2 bearer token. This should already be URL encoded
         'bearer'                     => '',
@@ -453,11 +458,58 @@ class tmhOAuth {
    * @return void oauth_signature is added to the parameters in the class array variable '$this->request_settings'
    */
   private function prepare_oauth_signature() {
-    $this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(
-      base64_encode(
-        hash_hmac(
-          'sha1', $this->request_settings['basestring'], $this->request_settings['signing_key'], true
-    )));
+    switch ($this->config['oauth_signature_method']) {
+      case 'HMAC-SHA1':
+        $signature = $this->sign_with_hmac('sha1');
+        break;
+      case 'HMAC-SHA256':
+        $signature = $this->sign_with_hmac('sha256');
+        break;
+      case 'RSA-SHA1':
+        $signature = $this->sign_with_rsa(OPENSSL_ALGO_SHA1);
+        break;
+      case 'RSA-SHA256':
+        $signature = $this->sign_with_rsa(OPENSSL_ALGO_SHA256);
+        break;
+      default:
+        throw new Exception("Unsupported oauth_signature_method: '" . $this->config['oauth_signature_method'] . "'");
+    }
+    $this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(base64_encode($signature));
+  }
+
+  /**
+   * Signs the OAuth 1 request using HMAC-based signature algorithm
+   *
+   * @param string $algorithm algorithm name (like sha1 or sha256)
+   * @return binary signature
+   */
+  private function sign_with_hmac($algorithm) {
+    return hash_hmac(
+      $algorithm, $this->request_settings['basestring'], $this->request_settings['signing_key'], true
+    );
+  }
+
+  /**
+   * Signs the OAuth 1 request using RSA-based signature algorithm
+   *
+   * @param mixed $algorithm ID or name of hash algorithm that will be
+   * used to compute base string hash before encrypting it with RSA;
+   * values understood by openssl_sign()'s $signature_alg parameter
+   * are accepted here (like 'sha1' or OPENSSL_ALGO_SHA256)
+   * @return binary signature
+   */
+  private function sign_with_rsa($algorithm) {
+    if (!function_exists('openssl_sign')) {
+      throw new Exception("openssl_sign function does not exist. Please make sure Openssl extension is installed");
+    }
+    if ($this->config['private_key_pem'] == '') {
+      throw new Exception("No private key PEM is configured, cannot sign");
+    }
+    $ok = openssl_sign($this->request_settings['basestring'], $signature, $this->config['private_key_pem'], $algorithm);
+    if (!$ok) {
+      throw new Exception("Cannot sign: " . openssl_error_string()); 
+    }
+    return $signature;
   }
 
   /**
