@@ -464,10 +464,10 @@ class tmhOAuth {
         $signature = $this->sign_with_hmac('sha256');
         break;
       case 'RSA-SHA1':
-        $signature = $this->sign_with_rsa('sha1');
+        $signature = $this->sign_with_rsa(OPENSSL_ALGO_SHA1);
         break;
       case 'RSA-SHA256':
-        $signature = $this->sign_with_rsa('sha256');
+        $signature = $this->sign_with_rsa(OPENSSL_ALGO_SHA256);
         break;
       default:
         throw new Exception("Unsupported oauth_signature_method: '" . $this->config['oauth_signature_method'] . "'");
@@ -476,7 +476,7 @@ class tmhOAuth {
   }
 
   /**
-   * Signs the OAuth 1 request with HMAC-based signature
+   * Signs the OAuth 1 request using HMAC-based signature algorithm
    *
    * @param string $algorithm algorithm name (like sha1 or sha256)
    * @return binary signature
@@ -488,11 +488,12 @@ class tmhOAuth {
   }
 
   /**
-   * Signs the OAuth 1 request with RSA-based signature
+   * Signs the OAuth 1 request using RSA-based signature algorithm
    *
-   * @param string $algorithm name of hash algorithm that will be
-   * used to compute base string hash before encrypting it with RSA
-   * (like sha1 or sha256)
+   * @param mixed $algorithm ID or name of hash algorithm that will be
+   * used to compute base string hash before encrypting it with RSA;
+   * values understood by openssl_sign()'s $signature_alg parameter
+   * are accepted here (like 'sha1' or OPENSSL_ALGO_SHA256)
    * @return binary signature
    */
   private function sign_with_rsa($algorithm) {
