@@ -391,7 +391,9 @@ class tmhOAuth {
       $this->request_settings['basestring_params'] = implode('&', $prepared_pairs_with_oauth);
     }
 
-    if ($this->request_settings['payload'] !== null) {
+    $has_payload = isset($this->request_settings['payload']) && $this->request_settings['payload'] !== null;
+
+    if ($has_payload) {
       $this->request_settings['postfields'] = $this->request_settings['payload'];
     }
 
@@ -403,7 +405,7 @@ class tmhOAuth {
         case 'PUT':
           // fall through to POST as PUT should be treated the same
         case 'POST':
-           if ($this->request_settings['payload'] !== null) {
+           if ($has_payload) {
                throw new RuntimeException("You can't use 'payload' settings together with request parameters for POST of PUT");
            }
           $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
