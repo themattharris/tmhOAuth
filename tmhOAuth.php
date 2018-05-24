@@ -391,6 +391,12 @@ class tmhOAuth {
       $this->request_settings['basestring_params'] = implode('&', $prepared_pairs_with_oauth);
     }
 
+    $has_payload = isset($this->request_settings['payload']) && $this->request_settings['payload'] !== null;
+
+    if ($has_payload) {
+      $this->request_settings['postfields'] = $this->request_settings['payload'];
+    }
+
     // setup params for GET/POST/PUT method handling
     if (!empty($prepared)) {
       $content = implode('&', $prepared_pairs);
@@ -399,6 +405,9 @@ class tmhOAuth {
         case 'PUT':
           // fall through to POST as PUT should be treated the same
         case 'POST':
+           if ($has_payload) {
+               throw new RuntimeException("You can't use 'payload' settings together with request parameters for POST or PUT");
+           }
           $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
           break;
         default:
@@ -509,16 +518,18 @@ class tmhOAuth {
    * @param string $useauth whether to use authentication when making the request. Default true
    * @param string $multipart whether this request contains multipart data. Default false
    * @param array $headers any custom headers to send with the request. Default empty array
+   * @param string|null $payload payload to send in request
    * @return int the http response code for the request. 0 is returned if a connection could not be made
    */
-  public function request($method, $url, $params=array(), $useauth=true, $multipart=false, $headers=array()) {
+  public function request($method, $url, $params=array(), $useauth=true, $multipart=false, $headers=array(), $payload=null) {
     $options = array(
       'method'    => $method,
       'url'       => $url,
       'params'    => $params,
       'with_user' => true,
       'multipart' => $multipart,
-      'headers'   => $headers
+      'headers'   => $headers,
+      'payload'   => $payload
     );
     $options = array_merge($this->default_options(), $options);
 
