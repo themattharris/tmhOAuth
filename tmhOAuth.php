@@ -358,8 +358,10 @@ class tmhOAuth {
     foreach ($params as $k => $v) {
       $k = $this->request_settings['multipart'] ? $k : $this->safe_encode($k);
 
-      if (is_array($v))
-        $v = implode(',', $v);
+      if (is_array($v)) {
+        $containsOnlyStrings = count(array_filter($v, 'is_string')) === count($v);
+        $v = $containsOnlyStrings ? implode(',', $v) : $v;
+      }
 
       // we don't need to do the multipart escaping if we support curlfile
       if ($supports_curl_file && ($v instanceof CurlFile)) {
