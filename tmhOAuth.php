@@ -335,7 +335,7 @@ class tmhOAuth {
     if (isset($this->request_settings['oauth1_params'])) {
       $oauth1  = &$this->request_settings['oauth1_params'];
       $doing_oauth1 = true;
-      $params = array_merge($oauth1, $this->request_settings['params']);
+      $params = array_merge($oauth1, (is_array($this->request_settings['params']) ? $this->request_settings['params'] : []));
 
       // Remove oauth_signature if present
       // Ref: Spec: 9.1.1 ("The oauth_signature parameter MUST be excluded.")
@@ -647,6 +647,19 @@ class tmhOAuth {
   }
 
   /**
+   * Determines if the $string is json or not
+   *
+   * @param  mixed $string
+   *
+   * @return bool
+   */
+  private function isJson($string) {
+    json_decode($string);
+
+    return (json_last_error() == JSON_ERROR_NONE);
+  }
+
+  /**
    * Utility function to create the request URL in the requested format.
    * If a fully-qualified URI is provided, it will be returned.
    * Any multi-slashes (except for the protocol) will be replaced with a single slash.
@@ -781,7 +794,11 @@ class tmhOAuth {
       $this->request_settings['url'] = $this->request_settings['url'] . '?' . $this->request_settings['querystring'];
     } elseif ($this->request_settings['method'] == 'POST' || $this->request_settings['method'] == 'PUT') {
       $postfields = array();
-      if (isset($this->request_settings['postfields']))
+
+      if ($this->isJson($this->request_settings['params'])) {
+        $postfields = $this->request_settings['params'];
+        $this->request_settings['headers']['Content-Type'] = 'application/json';
+      } elseif (isset($this->request_settings['postfields']))
         $postfields = $this->request_settings['postfields'];
 
       curl_setopt($c, CURLOPT_POSTFIELDS, $postfields);
